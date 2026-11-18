@@ -1,0 +1,1660 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI Security Notes</title>
+  <style>
+    :root {
+      --bg: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --accent: #2563eb;
+      --card: #f3f4f6;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --bg: #111827;
+        --text: #f9fafb;
+        --muted: #9ca3af;
+        --accent: #60a5fa;
+        --card: #1f2937;
+      }
+    }
+    :root[data-theme="dark"] {
+      --bg: #111827;
+      --text: #f9fafb;
+      --muted: #9ca3af;
+      --accent: #60a5fa;
+      --card: #1f2937;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.65;
+      background: var(--bg);
+      color: var(--text);
+    }
+    header {
+      padding: 24px 16px;
+      background: var(--card);
+      border-bottom: 1px solid var(--muted);
+    }
+    header h1 { margin: 0 0 6px; font-size: 1.6rem; }
+    header p { margin: 0; color: var(--muted); }
+    nav {
+      position: sticky;
+      top: 0;
+      background: var(--bg);
+      border-bottom: 1px solid var(--card);
+      padding: 10px 16px;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+    nav a {
+      color: var(--accent);
+      text-decoration: none;
+      margin-right: 14px;
+      font-size: 0.95rem;
+    }
+    nav a.active {
+      font-weight: bold;
+      border-bottom: 3px solid var(--accent);
+      padding-bottom: 4px;
+    }
+    main { max-width: 780px; margin: 0 auto; padding: 16px; }
+    section { margin-bottom: 40px; display: none; }
+    section.active { display: block; }
+    h2 { font-size: 1.4rem; border-bottom: 2px solid var(--accent); padding-bottom: 4px; }
+    h3 { font-size: 1.12rem; margin: 26px 0 6px; }
+    p { margin: 8px 0; }
+    ul { padding-left: 20px; }
+    li { margin-bottom: 7px; }
+    .box {
+      background: var(--card);
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin: 14px 0;
+    }
+    .example { border-left: 4px solid var(--accent); }
+    .label { font-weight: bold; color: var(--accent); }
+    dl { margin: 8px 0; }
+    dt { font-weight: bold; margin-top: 12px; }
+    dd { margin: 2px 0 0 0; }
+    footer {
+      text-align: center;
+      color: var(--muted);
+      padding: 24px 16px;
+      font-size: 0.9rem;
+    }
+    @media (max-width: 480px) {
+      header h1 { font-size: 1.3rem; }
+    }
+  
+    .author-btn {
+      display: inline-block;
+      margin-top: 12px;
+      padding: 8px 16px;
+      background: var(--accent);
+      color: #ffffff;
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      font-weight: bold;
+    }
+    .author-btn:hover { opacity: 0.85; }
+    .navs { position: sticky; top: 0; background: var(--bg); z-index: 10; border-bottom: 1px solid var(--card); }
+    .navs nav { position: static; border-bottom: none; }
+    nav.top { border-bottom: 1px solid var(--card); }
+    nav.top a { font-weight: bold; font-size: 1rem; }
+    nav.sub { display: none; background: var(--card); }
+    nav.sub.show { display: block; }
+    nav.sub a { font-size: 0.9rem; }
+    ol { padding-left: 22px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Cyber Security Series Notes</h1>
+  <p>Simple notes for the three-part Macquarie University cyber security series on Coursera. Pick a part, then pick a module.</p>
+  <a class="author-btn" href="https://www.linkedin.com/in/taha-anwar-1977231ba/" target="_blank" rel="noopener noreferrer">By Taha Anwar</a>
+</header>
+
+<div class="navs">
+<nav class="top" id="topnav">
+  <a href="#p1-m1" data-course="p1">Part 1: Data Privacy</a>
+  <a href="#p2-m1" data-course="p2">Part 2: Data Security and Information Privacy</a>
+  <a href="#p3-m1" data-course="p3">Part 3: Security of AI</a>
+</nav>
+<nav class="sub" id="sub-p1">
+  <a href="#p1-m1">1 Foundations</a>
+  <a href="#p1-m2">2 Security and Crypto</a>
+  <a href="#p1-m3">3 De-identification</a>
+  <a href="#p1-m4">4 Re-identification</a>
+  <a href="#p1-m5">5 Privacy by Design and AI</a>
+  <a href="#p1-m6">6 Data Sharing</a>
+  <a href="#p1-m7">7 Incident Response</a>
+  <a href="#p1-m8">8 Breach Notification</a>
+  <a href="#p1-m9">9 Cheat Sheets</a>
+</nav>
+<nav class="sub" id="sub-p2">
+  <a href="#p2-m1">Module 1 Threats and Risks</a>
+  <a href="#p2-m2">Module 2 Quantifying Risk</a>
+  <a href="#p2-m3">Module 3 De-identification Methods</a>
+  <a href="#p2-m4">Module 4 Provable Privacy</a>
+  <a href="#p2-m5">Module 5 Record Linkage</a>
+  <a href="#p2-m6">Module 6 Tools and Frameworks</a>
+</nav>
+<nav class="sub" id="sub-p3">
+  <a href="#p3-m1">Module 1</a>
+  <a href="#p3-m2">Module 2</a>
+  <a href="#p3-m3">Module 3</a>
+  <a href="#p3-m4">Module 4</a>
+  <a href="#p3-m5">Module 5</a>
+  <a href="#p3-m6">Module 6</a>
+  <a href="#p3-glossary">Glossary</a>
+</nav>
+</div>
+
+<main>
+
+<!-- ============================ PART 1 ============================ -->
+
+<section id="p1-m1">
+  <h2>Part 1 / Module 1: Privacy Foundations</h2>
+
+  <div class="box">
+    <span class="label">Big picture:</span> Privacy is about people having control over their personal information. This module explains the basic ideas that all later topics use.
+  </div>
+
+  <h3>1. What is data privacy?</h3>
+  <ul>
+    <li><strong>Data privacy:</strong> the rules for how personal information is collected, stored, used, shared and kept safe. It gives people control over their own data.</li>
+    <li>Companies must collect and use personal data only for clear, fair and legal reasons.</li>
+    <li>People have a right to know who has their data and how it is used.</li>
+    <li>Poor privacy handling causes real harm: money loss, identity theft, stress and damaged reputation.</li>
+    <li>Privacy is a human right and a legal duty, not just an IT task. Losing it destroys trust and leads to heavy fines.</li>
+  </ul>
+
+  <h3>2. Personal information: direct and indirect identifiers</h3>
+  <ul>
+    <li><strong>Personal information:</strong> any detail that can point to a specific person.</li>
+    <li><strong>Direct identifiers</strong> point to a person on their own: full name, home address, phone number, email, national ID (tax file, Medicare, social security number), passport number.</li>
+    <li><strong>Indirect identifiers</strong> point to a person only when combined: age or birth year, postcode, job title, ethnic background, workplace, GPS routes, unusual habits or medical records.</li>
+  </ul>
+  <div class="box example">
+    <span class="label">Key rule:</span> Removing names is not enough. If someone combines age, gender and postcode with public records, they can still work out who a person is.
+  </div>
+
+  <h3>3. Data minimisation</h3>
+  <ul>
+    <li>Only ask for and keep the smallest amount of personal data you need.</li>
+    <li><strong>Benefits:</strong> less sensitive data on your servers; less damage if hackers get in; cheaper and cleaner storage; easier to follow the law.</li>
+    <li><strong>Example:</strong> if an app only needs to know you are over 18, ask for a yes/no tick box. Do not ask for or save your exact birth date or a copy of your passport.</li>
+  </ul>
+
+  <h3>4. Purpose limitation</h3>
+  <ul>
+    <li>Data collected for one reason must not be secretly used for another without the person saying yes.</li>
+    <li>Explain clearly why you need the information before collecting it. Ask again before reusing it for a new plan. Be honest about what happens to the data.</li>
+    <li><strong>Example:</strong> a food delivery app collects your address to deliver dinner. It cannot sell that address to marketers or send you junk mail.</li>
+  </ul>
+
+  <h3>5. Data retention</h3>
+  <ul>
+    <li>Do not keep personal data forever. Set schedules to securely erase or permanently de-identify records when you no longer need them.</li>
+    <li>When an account closes or a project ends, delete or permanently scramble the records.</li>
+    <li>Old, unused data is a huge target for criminals, so clean out old databases regularly.</li>
+  </ul>
+
+  <h3>6. Data security controls (practical protection)</h3>
+  <p>Use many layers of technical and human defences. Threats to guard against: unauthorised staff or hackers viewing files, data theft, emails sent to the wrong person, accidental deletion or computer failure, data tampering and ransomware.</p>
+  <ul>
+    <li><strong>Role-based access:</strong> give staff only the files they need for their job.</li>
+    <li>Strong passwords and password managers.</li>
+    <li><strong>Multi-Factor Authentication (MFA):</strong> a second proof of identity, such as a code on your phone.</li>
+    <li>Encryption for stored files and internet traffic.</li>
+    <li>Monitoring and alerts for suspicious logins.</li>
+    <li>Regular, tested backups kept in a separate safe place.</li>
+    <li>Regular privacy and phishing training for all staff.</li>
+  </ul>
+</section>
+
+<section id="p1-m2">
+  <h2>Part 1 / Module 2: Security and Cryptography</h2>
+
+  <h3>1. Encryption</h3>
+  <ul>
+    <li><strong>Encryption:</strong> uses maths to scramble readable text into unreadable code. Only someone with the secret <strong>key</strong> can unlock it.</li>
+    <li><strong>Encryption at rest:</strong> protects stored data (hard drives, USB sticks, databases, cloud). Example: a stolen laptop with an encrypted drive cannot be read without the password.</li>
+    <li><strong>Encryption in transit:</strong> protects data moving over Wi-Fi and the internet. Example: HTTPS padlocks and secure VPNs.</li>
+  </ul>
+  <div class="box example">
+    <span class="label">Exam point:</span> Encryption does NOT mean the data is de-identified. Anyone with the key sees the real identity straight away.
+  </div>
+
+  <h3>2. Data masking</h3>
+  <ul>
+    <li><strong>Masking:</strong> hides parts of data with symbols so staff see only what they need.</li>
+    <li><strong>Encryption vs masking:</strong> encryption scrambles data with maths and can be fully reversed with the key. Masking hides characters on screen or in test files.</li>
+    <li><strong>Examples:</strong> phone 03001234567 becomes 0300******7. Card 1234 5678 9012 3456 becomes **** **** **** 3456.</li>
+  </ul>
+
+  <h3>3. Pseudonymisation</h3>
+  <ul>
+    <li><strong>Pseudonymisation:</strong> replaces real names with random ID codes (tokens) and keeps a separate, locked lookup table to reconnect them when needed.</li>
+    <li><strong>Example:</strong> a hospital lab sees "Patient A" instead of "Ali Khan". A locked master table links Patient A back to Ali.</li>
+    <li><strong>Legal note:</strong> pseudonymised data is STILL personal data under privacy law, because the table can reconnect the code to the person.</li>
+  </ul>
+</section>
+
+<section id="p1-m3">
+  <h2>Part 1 / Module 3: De-identification</h2>
+
+  <h3>1. What is de-identification?</h3>
+  <ul>
+    <li><strong>De-identification (anonymisation):</strong> carefully changing a dataset so it is very hard to identify any single person, while keeping it useful for research and charts.</li>
+    <li><strong>Goals:</strong> protect privacy when sharing data; lower identity theft risk; keep useful trends; make sharing safe, legal and ethical.</li>
+  </ul>
+
+  <h3>2. Five practical methods</h3>
+  <dl>
+    <dt>1. Omission</dt><dd>Delete direct identifier columns (names, phone, email, passport). Caution: indirect clues left behind can still identify people.</dd>
+    <dt>2. Generalisation</dt><dd>Make details broader. Exact age 25 becomes age group 20 to 29. A street address becomes a city or region.</dd>
+    <dt>3. Grouping and aggregation</dt><dd>Combine rows into summary numbers. Instead of listing orders for John, Sarah and Mike, say "500 customers ordered food in this suburb".</dd>
+    <dt>4. Rounding</dt><dd>Reduce precision. Age 27 becomes 30. Salary $127,450 becomes $125,000.</dd>
+    <dt>5. Adding noise</dt><dd>Add or subtract small random numbers to individual values while keeping the group average the same. A real score of 27 is reported as 28.</dd>
+  </dl>
+
+  <h3>3. Differential privacy (simple version)</h3>
+  <ul>
+    <li>Adds carefully measured random noise to database answers so an attacker cannot tell whether any one person is in the data.</li>
+    <li>Adding or removing one person does not change the final result in a meaningful way.</li>
+    <li>It uses a <strong>privacy budget (epsilon)</strong>. Too many queries use up the budget and can leak clues.</li>
+    <li>Researchers learn big facts about a population without learning secrets about one person. (Part 2 explains the maths in detail.)</li>
+  </ul>
+
+  <h3>4. De-identification is not 100% perfect</h3>
+  <ul>
+    <li>De-identification lowers risk but does not remove it.</li>
+    <li>Birth year + postcode + gender can uniquely identify about 87% of people.</li>
+    <li>Other clues: rare job titles, unique medical conditions, daily GPS routes, and linking with voter rolls, social media or leaked databases.</li>
+  </ul>
+</section>
+
+<section id="p1-m4">
+  <h2>Part 1 / Module 4: Re-identification</h2>
+
+  <h3>1. What is re-identification?</h3>
+  <ul>
+    <li><strong>Re-identification:</strong> matching cleaned data back to real people.</li>
+    <li><strong>Internal risks:</strong> weaknesses inside the file, such as one-person rows, rare values or too many detailed questions.</li>
+    <li><strong>External risks:</strong> outside information such as social media check-ins, public registers and smart AI matching tools.</li>
+  </ul>
+
+  <h3>2. What makes a dataset vulnerable?</h3>
+  <ul>
+    <li>Data kept per person instead of grouped totals.</li>
+    <li>Extreme or rare values (the highest-paid worker in a small office, a rare illness).</li>
+    <li>Too many columns (for example 50 survey answers per person).</li>
+    <li>Very sensitive details such as diagnoses or bank transactions.</li>
+    <li><strong>Vulnerable groups needing extra care:</strong> children and students, hospital and mental health patients, domestic violence survivors, prisoners and parolees, elderly and dependent people.</li>
+  </ul>
+
+  <h3>3. Auxiliary information and linkage attacks</h3>
+  <ul>
+    <li><strong>Auxiliary information:</strong> outside clues that an attacker joins to cleaned data. Sources: social media, voter lists, property records, news and court documents, data broker lists, old hacked databases.</li>
+    <li><strong>Linkage attack:</strong> joining the cleaned data with those clues to find identities.</li>
+  </ul>
+  <div class="box example">
+    <span class="label">Example:</span> A city publishes cleaned train trip logs. A politician posts "just boarded the 8:15 train to Central". The attacker matches that exact time and station in the data and uncovers the politician's whole travel history.
+  </div>
+
+  <h3>4. Risk factors and the unknown future</h3>
+  <ul>
+    <li>Risk depends on how unique the records are, where the data lives, why someone wants to unmask it (money, blackmail, curiosity, rivalry) and how serious the harm would be.</li>
+    <li>You cannot predict which databases will become public in 5 or 10 years, or how good AI matching will become. Cleaning data once and assuming it is safe forever is dangerous.</li>
+  </ul>
+
+  <h3>5. Environment and context</h3>
+  <ul>
+    <li>Safety depends on where the data lives, who has access and what contracts protect it: vetted researchers, secure servers, legal agreements and penalties.</li>
+    <li><strong>Example:</strong> a file in a locked university lab with signed contracts is low risk. The same file as a free download on a public website is very high risk.</li>
+  </ul>
+
+  <h3>6. Data situation audit</h3>
+  <p>A formal check before sharing data. Ask: who are the people (vulnerable?), what identifiers are in the columns, how sensitive is it, how will it be shared (internal, partner API or public download), who receives it and is their security strong, and what legal agreements and audit rights apply?</p>
+
+  <h3>7. Dynamic risk analysis</h3>
+  <ul>
+    <li>Privacy risk is not a one-time checklist. It changes as AI tools improve, new data leaks appear, partners change their access rules and laws get stricter.</li>
+    <li><strong>Three ways to handle risk:</strong> <em>Control</em> it (masking, de-identification, strong contracts), <em>Avoid</em> it (do not collect or share high-risk data), or <em>Accept</em> small leftover risk only when benefits are high and safeguards are strong.</li>
+  </ul>
+</section>
+
+<section id="p1-m5">
+  <h2>Part 1 / Module 5: Privacy by Design and AI Governance</h2>
+
+  <h3>1. Privacy Impact Assessment (PIA)</h3>
+  <ul>
+    <li>A structured check done <em>before</em> launching a new app or process, to find and fix privacy problems early.</li>
+    <li>Core questions: what personal information is collected; why each field is needed; how and where it is stored; who can access it; what could go wrong; what steps will stop harm.</li>
+  </ul>
+
+  <h3>2. Privacy by Design (PbD)</h3>
+  <ul>
+    <li>Make privacy a built-in default from the first line of code, not a patch at the end.</li>
+    <li><strong>Principles:</strong> be proactive; privacy as the default (opt-in, not sneaky opt-out); protect data through its whole life from creation to deletion; strong security and encryption end to end; be open and clear with users; simple privacy controls.</li>
+    <li><strong>Wrong way:</strong> rush to launch, collect lots of data, fix privacy after regulators investigate. <strong>PbD way:</strong> check risks first, collect only what you need, build in security, then launch.</li>
+  </ul>
+
+  <h3>3. Algorithmic Impact Assessment (AIA)</h3>
+  <ul>
+    <li>A check of AI models and algorithms to make sure they are fair, accurate, safe and non-discriminatory.</li>
+    <li>It looks for: unfair bias against groups; unfair results in loans, hiring and criminal justice; "black box" systems nobody can explain; hackers extracting private training data; harm to vulnerable people and community trust.</li>
+  </ul>
+
+  <h3>4. Algorithmic bias and fairness</h3>
+  <ul>
+    <li>Algorithms learn from past data. If the data has human prejudice, the AI copies and grows it.</li>
+    <li><strong>Causes:</strong> training data that leaves out some groups; past discrimination in the records; hidden proxy clues (a postcode standing in for race or income); measuring only overall accuracy while ignoring high error rates for minorities.</li>
+    <li><strong>Exam truth:</strong> an AI can be 95% accurate overall and still be terribly unfair to a small group.</li>
+  </ul>
+
+  <h3>5. Data inputs and AI decisions</h3>
+  <p>"Garbage in, biased output out." Check which columns feed the model, whether the training data is accurate, fresh and complete, whether all groups are fairly represented, and what baseline assumptions score people.</p>
+
+  <h3>6. Managing AI and algorithmic risk</h3>
+  <ul>
+    <li>Test models for fairness across groups before launch.</li>
+    <li>Run regular bias checks on live systems to catch drifting results.</li>
+    <li>Keep humans in the loop for high-stakes decisions (loans, hiring, medical care).</li>
+    <li>Run mandatory AIAs and keep clear records of how the model works and where its data came from.</li>
+  </ul>
+</section>
+
+<section id="p1-m6">
+  <h2>Part 1 / Module 6: Data Sharing</h2>
+
+  <h3>1. Open data</h3>
+  <ul>
+    <li>Publishing public government and scientific data helps researchers and businesses, but personal identities must be protected.</li>
+    <li><strong>Benefits:</strong> government becomes transparent and accountable; scientists make discoveries; new apps and services appear; city planning and transport improve.</li>
+  </ul>
+
+  <h3>2. Data sharing protocols (checklist before sending data to partners)</h3>
+  <ul>
+    <li>What is the clear, legal business reason?</li>
+    <li>Who receives it, and is their cybersecurity strong?</li>
+    <li>Which exact columns are sent? Can unneeded ones be removed?</li>
+    <li>Has the data been properly cleaned and de-identified?</li>
+    <li>Could the recipient combine it with other files to unmask people?</li>
+    <li>Have both sides signed Data Processing Agreements and confidentiality contracts?</li>
+    <li>Must the partner report breaches to you immediately?</li>
+  </ul>
+
+  <h3>3. Privacy and ethical obligations</h3>
+  <p>Organisations must treat people with respect, be honest about data handling and listen to affected groups: customers and users, advocacy groups for vulnerable people, independent privacy and ethics experts, regulators, and employees and unions.</p>
+</section>
+
+<section id="p1-m7">
+  <h2>Part 1 / Module 7: Incident Response</h2>
+
+  <h3>1. What is a privacy incident?</h3>
+  <p>Any event where personal data is lost, stolen, damaged, or seen by someone who should not see it.</p>
+  <ul>
+    <li>An unencrypted laptop with payroll records left in a taxi.</li>
+    <li>A website bug lets criminals steal 500,000 customer payment accounts.</li>
+    <li>Ransomware locks hospital patient records and demands money.</li>
+    <li>An employee accidentally emails private medical results to all staff.</li>
+  </ul>
+
+  <h3>2. The 8-step incident response lifecycle</h3>
+  <ol>
+    <li><strong>Detect:</strong> find and confirm the problem.</li>
+    <li><strong>Contain:</strong> isolate affected computers, change compromised passwords, lock API keys, stop the leak.</li>
+    <li><strong>Preserve evidence:</strong> safely save server logs, memory files and forensic records for investigators and lawyers.</li>
+    <li><strong>Investigate:</strong> find out how the attacker got in, what was stolen, and how many people are affected.</li>
+    <li><strong>Assess harm:</strong> could the data cause serious financial, emotional, physical or reputation harm?</li>
+    <li><strong>Notify:</strong> tell regulators and affected customers if the law requires it.</li>
+    <li><strong>Remediate:</strong> fix the bug, reset passwords, upgrade defences.</li>
+    <li><strong>Learn:</strong> hold a blameless review, update playbooks and retrain staff.</li>
+  </ol>
+
+  <h3>3. Being prepared</h3>
+  <ul>
+    <li><strong>Incident Response Plan:</strong> a written, practised plan: roles and decision powers, a contact register, a call tree, playbooks for ransomware, stolen laptops and hacked databases, rules for saving evidence, and pre-written email templates.</li>
+    <li><strong>Multi-disciplinary team:</strong> security is not only an IT problem. Include IT/cyber, privacy officers, legal counsel, executives, communications/PR, external forensic specialists and police liaisons.</li>
+    <li><strong>Emergency contact register:</strong> cyber lawyers, forensics firms, cyber insurance, regulators (such as the OAIC in Australia), police, crisis PR, cloud providers. Keep printed or offline encrypted copies, because a ransomware-locked server cannot be read.</li>
+    <li><strong>Call tree:</strong> a flowchart of who calls whom. It stops panic, mixed messages and wasted time.</li>
+    <li><strong>Simulations:</strong> <em>tabletop</em> talk-throughs of a mock attack, and unannounced <em>technical drills</em>. They find weaknesses and clear up who makes the final call between IT and legal.</li>
+  </ul>
+
+  <h3>4. The Cyber Kill Chain (7 stages of an attack)</h3>
+  <ol>
+    <li><strong>Reconnaissance:</strong> research the target and scan for weak spots.</li>
+    <li><strong>Weaponisation:</strong> pair malware with a trap, such as an infected PDF.</li>
+    <li><strong>Delivery:</strong> send it by phishing email or malicious link.</li>
+    <li><strong>Exploitation:</strong> trigger the software bug when the victim clicks.</li>
+    <li><strong>Installation:</strong> plant a backdoor on the computer.</li>
+    <li><strong>Command and control:</strong> open a secret channel back to the attacker.</li>
+    <li><strong>Actions on objectives:</strong> steal data, encrypt files or destroy records.</li>
+  </ol>
+  <p>Defenders should break the chain as early as possible, before stage 7.</p>
+</section>
+
+<section id="p1-m8">
+  <h2>Part 1 / Module 8: Breach Notification (NDB) and Communication</h2>
+
+  <h3>1. Australia's Notifiable Data Breach (NDB) scheme: the 3-part test</h3>
+  <p>An organisation must notify the regulator (OAIC) and affected people if ALL three are true:</p>
+  <ol>
+    <li>Personal information was accessed without permission, disclosed or lost.</li>
+    <li>A reasonable person would conclude it is likely to cause <strong>serious harm</strong>.</li>
+    <li>The organisation has <strong>not</strong> been able to prevent that harm with quick action (for example remotely wiping an encrypted phone before anyone unlocked it).</li>
+  </ol>
+
+  <h3>2. Why notify people?</h3>
+  <p>Quick notice lets victims change passwords, freeze credit cards, watch bank statements, watch for scams and use support services (such as IDCARE in Australia).</p>
+
+  <h3>3. A good breach notice</h3>
+  <ul>
+    <li>Explains what happened in plain English, without jargon.</li>
+    <li>States exactly what type of data was involved (passport number vs just an email).</li>
+    <li>Gives an honest view of how people could be affected.</li>
+    <li>Gives practical steps to protect themselves, free help offered (such as credit monitoring) and official contact details.</li>
+  </ul>
+  <div class="box example">
+    <span class="label">Poor vs clear:</span> Poor: "We experienced a telemetry anomaly across our external cloud endpoints. We take security seriously." Clear: "On August 12, an unauthorised party accessed records containing your name, email and password. We have contained the leak and reset your password. Please change your password on any other site where you used it."
+  </div>
+
+  <h3>4. Avoid over-notification</h3>
+  <p>Scary notices for harmless glitches make people ignore real warnings (warning fatigue). Police may also ask you to delay public notices so they do not tip off criminals.</p>
+
+  <h3>5. Common breach response mistakes</h3>
+  <ul>
+    <li>Discovering a breach months or years after the break-in.</li>
+    <li>Panicking and announcing guesses before checking facts.</li>
+    <li>Talking to reporters before investigating, or letting IT and executives give contradictory statements.</li>
+    <li>Telling the public before locking down systems, or letting reporters break the news first.</li>
+    <li>Underestimating the pain to victims, ignoring outside software vendors, or writing cold, defensive apologies.</li>
+  </ul>
+
+  <h3>6. Communication and media</h3>
+  <ul>
+    <li><strong>Rules:</strong> accuracy over speed; consistent messages everywhere; warm, plain English; be honest about what you know and what you are still investigating.</li>
+    <li><strong>Audiences:</strong> affected and unaffected customers, staff and support agents, regulators, board and investors, journalists, supply chain partners.</li>
+    <li><strong>Media readiness:</strong> pre-written statements, a media-trained spokesperson (such as the CEO or CISO), practised answers, and one media inbox for consistent replies.</li>
+  </ul>
+
+  <h3>7. Phishing during a breach</h3>
+  <p>Scammers create fake look-alike sites during a breach. Put updates on your known website, tell customers to type the address themselves instead of clicking email links, and use email authentication (<strong>DKIM, SPF, DMARC</strong>) so scammers cannot fake your email address. Never tell customers to click a brand-new, strange web address.</p>
+
+  <h3>8. Public companies and insider trading</h3>
+  <ul>
+    <li>Public companies must tell the stock exchange (such as the ASX) if a breach will materially hurt their value. Hiding a major breach can bring lawsuits and criminal penalties.</li>
+    <li><strong>Insider trading:</strong> buying or selling shares using secret knowledge of an unannounced breach is illegal and can lead to prison. Freeze share trading for the response team and share information on a need-to-know basis.</li>
+  </ul>
+
+  <h3>9. Lessons learned</h3>
+  <p>Hold a blameless post-incident review. Ask: what bug let hackers in and how long were they inside; which containment steps worked fast; were roles clear; did communication keep customers calm; what upgrades and training will prevent a repeat? The goal is to get stronger, not to punish staff.</p>
+</section>
+
+<section id="p1-m9">
+  <h2>Part 1 / Module 9: Cheat Sheets</h2>
+
+  <h3>20 key differences to remember</h3>
+  <dl>
+    <dt>Encryption</dt><dd>Scrambles data with maths so only people with the key can read it.</dd>
+    <dt>Masking</dt><dd>Hides parts of data on screen, like **** **** **** 3456.</dd>
+    <dt>Pseudonymisation</dt><dd>Replaces a name with an ID code and keeps a locked lookup table.</dd>
+    <dt>De-identification</dt><dd>Removes or changes clues so people are hard to identify.</dd>
+    <dt>Anonymisation</dt><dd>Changes data so thoroughly that re-identification is no longer reasonably possible.</dd>
+    <dt>Aggregation</dt><dd>Combines rows into group summary numbers.</dd>
+    <dt>Generalisation</dt><dd>Makes data broader (age 25 becomes 20 to 29).</dd>
+    <dt>Rounding</dt><dd>Replaces exact numbers with rounded ones.</dd>
+    <dt>Adding noise</dt><dd>Adds tiny random changes while keeping the group average the same.</dd>
+    <dt>Differential privacy</dt><dd>A proven maths method adding noise so nobody can tell if one person is in the data.</dd>
+    <dt>Data minimisation</dt><dd>Collect and keep only the data you truly need.</dd>
+    <dt>Purpose limitation</dt><dd>Use data only for the reason you told the person.</dd>
+    <dt>Data retention</dt><dd>Safely delete old personal records when no longer needed.</dd>
+    <dt>PIA</dt><dd>Check and fix privacy risks before launching a project.</dd>
+    <dt>PbD</dt><dd>Build privacy into the software from day one.</dd>
+    <dt>AIA</dt><dd>Check AI models for bias, unfairness and privacy risk.</dd>
+    <dt>Re-identification</dt><dd>Connecting cleaned data back to real people.</dd>
+    <dt>Auxiliary information</dt><dd>Outside clues (social media, voter lists) used to unmask records.</dd>
+    <dt>Incident response</dt><dd>The 8-step emergency process for leaks and attacks.</dd>
+    <dt>NDB</dt><dd>Australia's rule requiring notice for serious harmful breaches.</dd>
+  </dl>
+
+  <h3>Top 14 golden rules</h3>
+  <ol>
+    <li>Privacy: protect personal information and give people control.</li>
+    <li>Data minimisation: collect only what you need, keep it only as long as needed.</li>
+    <li>Encryption: locks data with a key. It does NOT mean the data is de-identified.</li>
+    <li>Masking: hides sensitive characters so staff see only what they need.</li>
+    <li>De-identification: reduces ability to identify people while keeping data useful.</li>
+    <li>Re-identification: unmasking people by combining data with public information.</li>
+    <li>Differential privacy: controlled noise so queries show trends without leaking any one person.</li>
+    <li>PIA: check and fix privacy risks before or during a project.</li>
+    <li>Privacy by Design: build protection in from the start.</li>
+    <li>AIA: find and stop bias and unfairness in automated decisions.</li>
+    <li>Privacy incident: personal data lost, stolen, damaged or seen without permission.</li>
+    <li>Incident response: detect, contain, preserve evidence, investigate, assess harm, notify, remediate, learn.</li>
+    <li>Effective notification: say what happened, how it affects people, what they can do and where to get help.</li>
+    <li>NDB test: data lost or leaked, likely serious harm, and quick action could not prevent the harm.</li>
+  </ol>
+  <div class="box">
+    <span class="label">Golden rule:</span> Privacy is not something you add at the end. It must be designed and built into every step of the data journey.
+  </div>
+</section>
+
+<!-- ============================ PART 2 ============================ -->
+
+<section id="p2-m1">
+  <h2>Part 2 / Module 1: Threats, Risks and Vulnerabilities</h2>
+
+  <h3>1. Data security vs information privacy</h3>
+  <ul>
+    <li><strong>Data security:</strong> protecting information from theft, unauthorised access, change, loss, damage and destruction. Tools: encryption, firewalls, access controls, authentication, updates and backups.</li>
+    <li><strong>Information privacy:</strong> controlling who can access personal information and how it is collected and used. It means collecting only what is needed, being open about why, controlling access, explaining use and not keeping data longer than needed.</li>
+    <li><strong>Simple difference:</strong> security = protect the data. Privacy = control how personal data is collected, accessed and used.</li>
+    <li>Both depend on context. Different situations, threats and data sensitivity need different protections.</li>
+  </ul>
+
+  <h3>2. The CIA triad</h3>
+  <dl>
+    <dt>Confidentiality (who can see it?)</dt><dd>Only authorised people can access information. Methods: encryption, access controls.</dd>
+    <dt>Integrity (has it changed?)</dt><dd>Data stays accurate and is not changed without permission. Methods: hashing, logs.</dd>
+    <dt>Availability (can I access it?)</dt><dd>Data and systems work when authorised users need them. Methods: backups, redundancy.</dd>
+  </dl>
+  <p><strong>Two privacy principles:</strong> <em>Anonymity</em> (a person's identity cannot be worked out from the data) and <em>indistinguishability</em> (one person's data cannot easily be told apart from others). Methods: de-identification, k-anonymity and differential privacy.</p>
+  <p><strong>Hashing:</strong> turns a value into a fixed-length code (a hash or digest). A tiny change gives a completely different hash (the "avalanche effect"). Example: "Peter" and "Pete" give totally different hashes, so comparing hashes shows if data was changed.</p>
+
+  <h3>3. Information systems (IS) networks</h3>
+  <ul>
+    <li>An IS network is connected systems and devices that share data: users, computers, software and operating systems, hardware, internet connections, gateways and routers, modems, databases and cloud storage, and IoT devices.</li>
+    <li><strong>Three states of data:</strong> <em>at rest</em> (stored), <em>in transit</em> (moving across a network), <em>in use</em> (being processed in memory/CPU).</li>
+    <li>Almost every component can be vulnerable if not configured, patched or monitored, including people.</li>
+  </ul>
+
+  <h3>4. Vulnerabilities by component</h3>
+  <dl>
+    <dt>Modems and gateways</dt>
+    <dd><strong>OS or service exploitation:</strong> using a known software weakness to take control. Protect with updates and a firewall. A <strong>firewall</strong> is a barrier that lets safe traffic in and blocks dangerous traffic. <strong>MITM (man-in-the-middle):</strong> an attacker sits between two parties and reads or changes messages. Protect with encrypted Wi-Fi and HTTPS/TLS (WPA3).</dd>
+    <dt>Databases</dt>
+    <dd>High-value targets because they hold lots of sensitive data. <strong>SQL injection:</strong> malicious SQL is typed into an input field and the system runs it, which can steal, change or delete data. Protect with input sanitisation, parameterised queries, encryption, strong access control, monitoring and de-identification.</dd>
+    <dt>Computers</dt>
+    <dd>Malware and exploitation. <strong>Case: WannaCry (2017)</strong> used a Windows flaw (EternalBlue) to infect over 250,000 computers in 150+ countries and demand cryptocurrency. Protect with updates, antivirus, firewall and <strong>backups</strong> (backups support availability).</dd>
+    <dt>IoT devices (smart cameras, TVs, printers)</dt>
+    <dd>Weak because of default passwords and old software. <strong>Case: casino fish-tank thermometer.</strong> Hackers entered through a smart thermometer, moved into the network and stole 10GB of high-roller data. <strong>Mirai</strong> malware uses default passwords to build a <strong>botnet</strong> (a group of hijacked devices) for <strong>DDoS</strong> attacks that flood servers. Protect: update, strong unique passwords, encrypted communication, firewalls, and put IoT devices on their own network (VLAN).</dd>
+    <dt>Humans</dt>
+    <dd>A major weak point: phishing, <strong>social engineering</strong> (tricking people), weak passwords, clicking bad links, malicious insiders. Protect with training, multi-factor authentication and email filters.</dd>
+  </dl>
+
+  <h3>5. Re-identification and landmark cases</h3>
+  <ul>
+    <li><strong>Re-identification:</strong> finding who a person is in data that was meant to be anonymous. It harms anonymity, indistinguishability and confidentiality, and can be used for money, ads, rivalry, information warfare or blackmail.</li>
+    <li><strong>AOL search logs (2006):</strong> reporters identified "User 4417749" from local searches.</li>
+    <li><strong>Netflix Prize (2007):</strong> researchers matched "anonymous" ratings with public IMDb reviews.</li>
+    <li><strong>Massachusetts hospital data (Sweeney):</strong> ZIP code + gender + date of birth matched against voter lists identified the Governor's medical records.</li>
+  </ul>
+
+  <h3>6. Four types of re-identification attack</h3>
+  <dl>
+    <dt>Inference</dt><dd>Guess hidden information from available facts. Example: knowing the only pet owner on a road searched for a vet reveals who they are.</dd>
+    <dt>Amplification</dt><dd>Combine several sources to strengthen what you learn. Example: join browsing logs with a social media profile.</dd>
+    <dt>Differencing</dt><dd>Compare two versions of a dataset to find hidden information. Example: N records vs N+1 records reveals the one new person.</dd>
+    <dt>Reconstruction</dt><dd>Rebuild original records from many aggregate answers.</dd>
+  </dl>
+
+  <h3>7. Auxiliary knowledge and key terms</h3>
+  <ul>
+    <li><strong>Unique identifiers:</strong> identify a person directly (SSN, full name).</li>
+    <li><strong>Quasi-identifiers:</strong> identify a person only when combined (ZIP code, date of birth, gender).</li>
+    <li><strong>Background knowledge:</strong> what the attacker already knows about the target.</li>
+    <li><strong>Adversary:</strong> a person, group, organisation or government that intends to cause harm.</li>
+    <li><strong>Bin size:</strong> how many people match a record. Bin size 1 = unique identification. Bin size 2 = ambiguous (could be either of two people).</li>
+    <li><strong>Provable guarantee:</strong> a mathematical proof that a method gives a certain protection. No system is guaranteed unbreakable forever, but a proof gives strong confidence.</li>
+  </ul>
+
+  <h3>8. Evidence that simple data is risky</h3>
+  <ul>
+    <li><strong>Pharmacy marketing data</strong> (drug, dose, refills, pharmacy ZIP, date): even when masked, 2.3% could be uniquely re-identified and 6.1% ambiguously (bin size 2).</li>
+    <li><strong>Browsing history:</strong> "R1064" searched for vets on ABC Road and flights to the UK. If you know only one resident on ABC Road has a pet, you know R1064 is that person and that they travel to the UK in June.</li>
+    <li><strong>Social networks:</strong> city, workplace, friends, interests and hobbies. Around six public attributes can uniquely identify a person.</li>
+    <li><strong>Entropy in bits:</strong> a measure of uniqueness. About 25 to 30 bits gives nearly 100% uniqueness, and six attributes give about 25 bits. More attributes means more uniqueness and more risk.</li>
+    <li><strong>Social engineering through social media:</strong> attackers use colleagues, projects and holidays to write convincing <strong>spear-phishing</strong>. Defend with awareness training and reducing what you share.</li>
+    <li><strong>Sensitive data is not just passwords and health records.</strong> Social network data, location data, transaction data and web search history are all sensitive.</li>
+  </ul>
+</section>
+
+<section id="p2-m2">
+  <h2>Part 2 / Module 2: Quantifying and Evaluating Privacy Risk</h2>
+
+  <div class="box">
+    <span class="label">Big picture:</span> This module teaches how to measure privacy risk with numbers. An attacker combines data with outside knowledge. Four things make this easier: uniqueness, uniformity, linkable tokens and correlation.
+  </div>
+
+  <h3>1. The four elements of privacy risk</h3>
+  <dl>
+    <dt>1. Uniqueness</dt>
+    <dd>How distinguishable a value is. A rare value is more unique and riskier. Example: in the list John, John, John, Dijith, "Dijith" is rare, so that record is more likely to be re-identified. <strong>Fix: k-anonymity.</strong> It requires every record to look the same as at least k-1 others. With k = 5, at least 5 records share the same relevant values. It makes re-identification hard, not impossible.</dd>
+    <dt>2. Uniformity</dt>
+    <dd>How consistent a person's values are across records or time. Repeated values make an attacker more confident. Example: someone keeps searching for the same illness. <strong>Fix: l-diversity.</strong> A group sharing the same quasi-identifiers must contain at least l different sensitive values. Example: if 10 records all say "chest pain", that is a big risk. With l = 3 the group should include, for example, chest pain, headache and fever.</dd>
+    <dt>3. Linkable tokens</dt>
+    <dd>Values containing personal information that can link a record to a person. <strong>Direct identifiers (DIDs)</strong> identify alone (name, email, phone, medical record number). <strong>Quasi-identifiers (QIDs)</strong> identify when combined (date of birth, gender, postcode). Example: an email address hidden in a free-text feedback box can identify a student even after names are removed.</dd>
+    <dt>4. Correlation</dt>
+    <dd>How strongly two attributes move together. If they are strongly correlated, knowing one lets you guess the other. Example: part-time job status is highly correlated with late-assignment penalties, so knowing a student has a job suggests a penalty. Correlation across datasets (age, gender, postcode vs browsing history) can also link records even when there are no direct identifiers.</dd>
+  </dl>
+  <p>To reduce these risks: remove values, modify values, generalise values and break correlations. Follow laws such as the Australian Privacy Act 1988 and the EU GDPR.</p>
+
+  <h3>2. Worked example: Alejandra's clinic data</h3>
+  <ul>
+    <li>Alejandra removes names and phone numbers and replaces patient IDs with record IDs (U1 to U10). The released table has Rec ID, Postcode and Medical Code.</li>
+    <li><strong>Is it safe? No.</strong> Fred knows "the only person from postcode 2017 who attended the clinic was Daniel Smith". The table shows 2017 has code C. So Fred learns Daniel Smith has condition C.</li>
+    <li>Lesson: removing direct identifiers does not make data anonymous. Attackers use background knowledge.</li>
+  </ul>
+
+  <h3>3. Threat models</h3>
+  <p>A <strong>threat model</strong> says what the attacker can do, knows and has. Three models in this course:</p>
+  <ul>
+    <li><strong>TM1:</strong> the attacker knows a single attribute.</li>
+    <li><strong>TM2:</strong> the attacker knows a combination of attributes (at least two).</li>
+    <li><strong>TM3:</strong> the attacker has direct identifiers or an outside source that links to them (for example a phone directory).</li>
+  </ul>
+  <p>The more the attacker knows, the greater the risk.</p>
+
+  <h3>4. The privacy spectrum (0 to 1)</h3>
+  <ul>
+    <li>0.0 = absolute privacy</li>
+    <li>0.25 = suspicion with low confidence</li>
+    <li>0.5 = suspicion with moderate confidence</li>
+    <li>0.75 = suspicion with high confidence</li>
+    <li>1.0 = provably exposed</li>
+    <li>Memory trick: 0 means private, 1 means exposed.</li>
+  </ul>
+
+  <h3>5. Entropy: measuring uncertainty</h3>
+  <ul>
+    <li><strong>Shannon entropy</strong> measures uncertainty, in bits. Formula: <strong>H(X) = -sum of p(x) times log2 p(x)</strong>, where p(x) is the probability of each value.</li>
+    <li>In this course: higher entropy means more information can be inferred, so higher privacy risk.</li>
+    <li><strong>Fair coin:</strong> 0.5 / 0.5 gives 1.0 bit, the maximum for two outcomes. A coin that always lands heads gives 0 bits (no uncertainty).</li>
+    <li><strong>Fruit box:</strong> apple 0.5 / orange 0.5 = 1.0 bit; 1 / 0 = 0 bits; 0.8 / 0.2 = about 0.72 bits; 0.6 / 0.4 = about 0.971 bits.</li>
+    <li>Pattern: equal probabilities give the highest entropy. One certain outcome gives zero.</li>
+  </ul>
+
+  <h3>6. Entropy applied to the clinic dataset</h3>
+  <p>Data: postcodes 2015 (3 records), 2016 (6), 2017 (1). Medical codes A (5), B (4), C (1).</p>
+  <ul>
+    <li><strong>TM1 (attacker knows postcode):</strong> probabilities 0.3, 0.6, 0.1 give about <strong>1.295 bits</strong>.</li>
+    <li><strong>TM2 (attacker knows medical code):</strong> probabilities 0.5, 0.4, 0.1 give about <strong>1.361 bits</strong>.</li>
+    <li><strong>TM3 (attacker knows both):</strong> combinations 0.3, 0.3, 0.3, 0.1 give about <strong>1.895 bits</strong>.</li>
+    <li><strong>Result: TM3 > TM2 > TM1.</strong> Knowing more attributes makes records more unique and narrows the candidates, so risk is highest for TM3. TM2 beats TM1 because its probabilities are more evenly spread.</li>
+    <li><strong>Check yourself:</strong> if U10's code changes from C to B, then A = 5 and B = 5, probabilities 0.5 / 0.5, entropy = 1.0 bit.</li>
+  </ul>
+  <div class="box">
+    <span class="label">One-line summary:</span> Module 2 is about finding what makes data re-identifiable, defining what an attacker knows through threat models, and using entropy to compare privacy risk.
+  </div>
+</section>
+
+<section id="p2-m3">
+  <h2>Part 2 / Module 3: De-identification Methods for Data Release</h2>
+
+  <h3>1. Why share data, and the problem</h3>
+  <ul>
+    <li>Organisations share data for good reasons. A retailer can share purchase data with marketers, wholesalers and transport firms to improve supply chains and customised products. Phone makers collect usage data to improve products.</li>
+    <li>The problem: even with names removed, attackers can mix the rest with outside data to re-identify people and learn health conditions, websites visited, keyboard input or location.</li>
+    <li><strong>Data curator:</strong> the trusted organisation that collects, protects, de-identifies and publishes data. <strong>Data users:</strong> the people who receive the anonymised data. Flow: original data, then de-identification, then anonymised data, then data users.</li>
+  </ul>
+
+  <h3>2. Five naive de-identification techniques</h3>
+  <dl>
+    <dt>Removing direct identifiers</dt><dd>Delete name, email, phone, Medicare number, national ID. Not enough on its own.</dd>
+    <dt>Aggregation</dt><dd>Release group statistics, not individual records. Example: "10,000 people travelled Karachi to Lahore".</dd>
+    <dt>Binning</dt><dd>Replace exact values with ranges (age 27 becomes 0 to 30). Costs some useful detail.</dd>
+    <dt>Perturbation</dt><dd>Add random noise (original value + random value = modified value).</dd>
+    <dt>Synthetic data</dt><dd>Artificial data that copies the patterns of real data without containing the real people.</dd>
+  </dl>
+  <p><strong>Problem:</strong> these can still fall to <strong>linkage attacks</strong> (joining with background knowledge or public data). De-identified does not always mean anonymous.</p>
+
+  <h3>3. Provable vs probable privacy</h3>
+  <ul>
+    <li><strong>Provable privacy:</strong> backed by a mathematical proof.</li>
+    <li>k-anonymity, l-diversity and t-closeness do NOT give fully provable guarantees. Differential privacy does.</li>
+    <li><strong>Inference attack:</strong> using available information (age, location, background knowledge) to infer sensitive information.</li>
+  </ul>
+
+  <h3>4. k-anonymity</h3>
+  <ul>
+    <li>Each released record is indistinguishable from at least k-1 others based on its quasi-identifiers. With k = 3, each record looks like at least 2 others, so each group has at least 3 records.</li>
+    <li><strong>Quasi-identifiers (QIs):</strong> age, nationality, zip code, gender, date of birth. <strong>Sensitive attribute:</strong> the thing to protect (disease, salary, medical condition).</li>
+    <li><strong>Generalisation:</strong> replace specific values with broader ones (age 23 becomes 20 to 30; zip 13063 becomes 130**).</li>
+    <li><strong>Suppression:</strong> remove a value with * when generalising is not enough (for example nationality). It loses information.</li>
+    <li><strong>Equivalence class:</strong> a group of records with the same quasi-identifier values after anonymisation. For k = 3, each class must have at least 3 records.</li>
+    <li><strong>Trade-off:</strong> a larger k gives more privacy but more information loss. A smaller k keeps more detail but is riskier.</li>
+  </ul>
+  <div class="box example">
+    <span class="label">Worked example (11 patient records):</span> With k = 3 the data is grouped as: R1 to R4 (nationality *, age 20 to 30, zip 130**), R5 to R8 (age 40 to 50, zip 148**) and R9 to R11 (age 30 to 40, zip 130**). An attacker who matches voter records (for example Alex, 36, 13068, Australia) could, before anonymisation, match one exact record (R11 = cancer). After k-anonymity the attacker faces several possible records, so there is uncertainty, and a bigger k means more uncertainty.
+  </div>
+
+  <h3>5. Attacks on k-anonymity</h3>
+  <ul>
+    <li><strong>Homogeneity attack:</strong> all records in a group have the same sensitive value (R9, R10, R11 all "cancer"), so anyone known to be in that group has cancer. k-anonymity hides identity but may not hide the sensitive value.</li>
+    <li><strong>Background attack:</strong> outside knowledge narrows the options. If Bob's group has cancer, heart disease, flu and flu, and you know New Zealanders rarely get heart disease or cancer, the answer is flu.</li>
+    <li>Other problems: information loss for large k, and no provable guarantee.</li>
+  </ul>
+
+  <h3>6. l-diversity</h3>
+  <ul>
+    <li>Each equivalence class must contain at least l different sensitive values, reasonably well represented. With l = 3, a group might hold heart, flu and cancer.</li>
+    <li>k-anonymity protects identity; l-diversity also protects against guessing the sensitive value. It helps against homogeneity and some background attacks.</li>
+    <li><strong>Similarity attack:</strong> values are different but mean similar things. A group of gastric ulcer, gastritis and stomach cancer is 3-diverse, but all are stomach problems, so the attacker still learns "stomach disease".</li>
+    <li><strong>Composition attack:</strong> an attacker combines several independently anonymised datasets (for example two hospitals that a person visited) to learn more than from one alone.</li>
+  </ul>
+
+  <h3>7. t-closeness</h3>
+  <ul>
+    <li>The distribution of the sensitive attribute in each group must be close to its distribution in the whole dataset. <strong>t</strong> is the allowed maximum distance.</li>
+    <li>Distance is measured with <strong>Earth Mover's Distance (EMD)</strong>: the minimum "work" needed to turn one distribution into another. A smaller distance means more similar.</li>
+    <li>Question each model answers: k-anonymity asks "how many records look alike?", l-diversity asks "how many different sensitive values?", t-closeness asks "how similar is the group's distribution to the overall one?"</li>
+    <li>Example with t = 0.278: groups are generalised more (age "under 40" and "over 50", zip "47***").</li>
+    <li><strong>Limitations:</strong> more information loss, lower data utility, hard privacy-utility balance, harder to implement, and the choice of t matters.</li>
+  </ul>
+
+  <h3>8. Comparison of models</h3>
+  <dl>
+    <dt>k-anonymity</dt><dd>Idea: each record looks like at least k-1 others. Protects against direct re-identification. Weak against homogeneity and background attacks. Memory line: "Make records look alike."</dd>
+    <dt>l-diversity</dt><dd>Idea: each group has at least l different sensitive values. Helps with homogeneity. Weak against similarity and composition attacks. "Make sensitive values diverse."</dd>
+    <dt>t-closeness</dt><dd>Idea: group distribution close to overall. Stronger against inference. Costs more information. "Make sensitive distributions close."</dd>
+    <dt>Differential privacy</dt><dd>Idea: add controlled noise. Gives provable guarantees. Needs more advanced methods. "Give mathematical privacy guarantees."</dd>
+  </dl>
+  <p><strong>Privacy vs utility:</strong> more privacy usually means more generalisation, less detail and less utility. More utility means more detail and more risk. The goal is a sensible balance.</p>
+  <p><strong>Progression to remember:</strong> naive techniques, then k-anonymity, then l-diversity, then t-closeness, then differential privacy.</p>
+</section>
+
+<section id="p2-m4">
+  <h2>Part 2 / Module 4: Probable Privacy to Provable Privacy</h2>
+
+  <h3>1. Why provable privacy?</h3>
+  <ul>
+    <li><strong>Probable privacy</strong> (k-anonymity, l-diversity, t-closeness): privacy is expected but not guaranteed. It can fail when attackers have background knowledge, auxiliary information, other datasets or knowledge about the original data.</li>
+    <li><strong>Provable privacy</strong> is backed by a mathematical proof. A strong model should protect against known attacks, make weak assumptions about the attacker, and make weak assumptions about the data.</li>
+    <li>It matters most for health, financial and personal data.</li>
+  </ul>
+
+  <h3>2. Three ways of sharing data</h3>
+  <ul>
+    <li><strong>Encryption:</strong> strong against unauthorised access, but does not protect privacy from authorised users (such as a database administrator), and encrypted data is hard to search or analyse.</li>
+    <li><strong>Anonymisation:</strong> k-anonymity and friends can still be broken by re-identification, inference, background and linkage attacks.</li>
+    <li><strong>Query-based access:</strong> the curator answers questions instead of releasing the database. But careful queries can still leak information.</li>
+  </ul>
+
+  <h3>3. The query attack example</h3>
+  <ul>
+    <li>The curator is trusted. The analyst (querier) is not.</li>
+    <li>At time t, a clinic has 6 people. The analyst asks "what fraction are blood type B and have cancer?" and gets 2/6.</li>
+    <li>Later Tom (blood type B, cancer) is added. The same question now gives 3/6.</li>
+    <li>The analyst knows Tom was added and is type B, so the rise from 2/6 to 3/6 shows Tom has cancer. Comparing query results leaked his diagnosis.</li>
+  </ul>
+
+  <h3>4. What is differential privacy?</h3>
+  <ul>
+    <li>A mathematical model for answering queries while hiding the effect of any single person's data.</li>
+    <li><strong>Neighbouring datasets:</strong> two datasets that differ by exactly one record (A has you, A' does not). Differential privacy needs query results on A and A' to be very similar (statistically indistinguishable).</li>
+    <li>It does NOT mean nothing can ever be learned about a person. It means nothing extra can be learned because their record was included. It still works when the attacker has background knowledge.</li>
+    <li>A <strong>randomised mechanism M</strong> adds random noise to answers: the analyst gets the exact answer plus random noise.</li>
+    <li><strong>Formula:</strong> Pr[M(A,q) in T] / Pr[M(A',q) in T] is at most e^epsilon. (Know the role of epsilon; the formula itself is less important.)</li>
+  </ul>
+
+  <h3>5. Epsilon: the privacy parameter (privacy budget)</h3>
+  <ul>
+    <li><strong>Small epsilon:</strong> stronger privacy, more noise, less accurate results, lower utility.</li>
+    <li><strong>Large epsilon:</strong> weaker privacy, less noise, more accurate results, higher utility.</li>
+    <li>epsilon = 0 means perfect privacy (output does not depend on the input). epsilon approaching infinity means no privacy guarantee.</li>
+    <li><strong>There is no free lunch in data privacy:</strong> stronger privacy normally costs some utility.</li>
+    <li><strong>Dataset size:</strong> noise matters less in large datasets (better utility). It matters more in small ones, although DP still works for small datasets.</li>
+    <li>"Differential privacy gives a 100% guarantee that no individual can be distinguished" is <strong>False</strong>. The guarantee is controlled by epsilon.</li>
+    <li>Noise can be added to the <strong>output</strong> (output perturbation, used in global DP) or to the <strong>input</strong> (input perturbation, used in local DP).</li>
+  </ul>
+
+  <h3>6. Global vs local differential privacy</h3>
+  <dl>
+    <dt>Global DP</dt><dd>Flow: individuals send raw data to a <strong>trusted curator</strong>, who adds noise and gives results to the analyst. The curator sees the original data. Needs trust. Generally better utility. Good when a company already holds the data and shares analytics with outside parties. Remember: "trust the curator, then protect the released data".</dd>
+    <dt>Local DP (LDP)</dt><dd>Flow: each person's device adds noise before sending. The curator never sees the original value. No trust needed. Generally lower utility. Remember: "do not trust the curator, protect the data before sending".</dd>
+  </dl>
+  <p><strong>Trade-off:</strong> trust vs utility. Real users: Google and Apple (local DP), the US Census Bureau and Uber (differential privacy for statistics and analytics).</p>
+
+  <h3>7. Mechanisms</h3>
+  <dl>
+    <dt>Laplace mechanism</dt><dd>Adds noise from a zero-mean Laplace distribution to <strong>numerical</strong> answers (counts, fractions, averages). The Laplace distribution has more probability near zero and heavier tails than the Gaussian (normal) one. <strong>Noise scale = delta f / epsilon.</strong></dd>
+    <dt>Exponential mechanism</dt><dd>For <strong>categorical or discrete</strong> answers, such as "what is the most common illness?" (flu, cancer, pneumonia, heart disease).</dd>
+    <dt>Randomised response</dt><dd>For <strong>local DP</strong>. Each person randomises their answer before sending. Examples: Google's RAPPOR and Apple's LDP.</dd>
+  </dl>
+
+  <h3>8. Sensitivity and formulas</h3>
+  <ul>
+    <li><strong>Aggregate statistics:</strong> numbers describing a whole dataset (average or median BMI, obesity rate, number of cancer patients) rather than single records.</li>
+    <li><strong>Query sensitivity (delta f):</strong> the maximum change in a query result when one record is added or removed.</li>
+    <li>For a fraction query on n records: <strong>delta f = 1/n</strong>. Example: 2/6 to 3/6 changes by 1/6.</li>
+    <li>For a fraction query, Laplace scale = (1/n) / epsilon = <strong>1/(epsilon x n)</strong>. Final answer = exact answer + Laplace noise with mean 0 and that scale.</li>
+    <li><strong>Three relationships:</strong> (1) epsilon down gives more privacy, more noise, less utility. (2) n up makes noise relatively smaller, so better utility. (3) sensitivity up needs more noise.</li>
+  </ul>
+
+  <h3>9. k-anonymity vs differential privacy</h3>
+  <ul>
+    <li>k-anonymity anonymises records, uses quasi-identifiers, can fail with background knowledge and has no provable guarantee.</li>
+    <li>Differential privacy usually protects query outputs with noise, uses neighbouring datasets and gives mathematical guarantees that hold even with outside information.</li>
+  </ul>
+  <div class="box">
+    <span class="label">Main idea of the module:</span> Differential privacy protects the effect of one person's data while still allowing useful analysis. Laplace is for numbers, Exponential is for categories, Randomised response is for local DP.
+  </div>
+</section>
+
+<section id="p2-m5">
+  <h2>Part 2 / Module 5: Privacy-Preserving Record Linkage (PPRL)</h2>
+
+  <h3>1. Why link records?</h3>
+  <p>Different organisations hold different data about the same people. Linking helps with: detecting disease outbreaks (hospital, travel and drug data), finding patients for clinical trials, counting unique patients with rare diseases, business marketing, insurance trends, crime and fraud detection (police, tax, telecom, financial records), and banking-health studies. The problem is that the data is personal, so it cannot just be shared. <strong>PPRL</strong> finds matching records without exposing the personal details.</p>
+
+  <h3>2. How PPRL works</h3>
+  <ol>
+    <li>Take quasi-identifiers (name, age or date of birth, sex, postcode) from each dataset.</li>
+    <li>Encode them to hide the original values.</li>
+    <li>Compare the encoded values.</li>
+    <li>Identify matching records.</li>
+    <li>Share only the sensitive attributes of matched records for analysis.</li>
+  </ol>
+  <ul>
+    <li><strong>Example:</strong> a hospital holds blood pressure, stress and visit reason. A bank holds loan type and amount. After matching on encoded identifiers, an analyst gets only the health and loan details, not names.</li>
+    <li><strong>Cardinality counting:</strong> records of the same person form a cluster. The number of clusters equals the number of unique patients.</li>
+  </ul>
+
+  <h3>3. Three challenges to balance</h3>
+  <ul>
+    <li><strong>Computational efficiency:</strong> comparing every record with every record needs n x n comparisons (1,000 x 1,000 = 1,000,000). With more datasets it grows exponentially.</li>
+    <li><strong>Linkage quality:</strong> correctly finding matches and non-matches.</li>
+    <li><strong>Privacy:</strong> encoded data must not let people be re-identified.</li>
+  </ul>
+
+  <h3>4. The PPRL pipeline</h3>
+  <ol>
+    <li>Data preprocessing and cleaning</li>
+    <li>Blocking (filtering)</li>
+    <li>Data encoding</li>
+    <li>Matching and linkage</li>
+    <li>Evaluation</li>
+  </ol>
+
+  <h3>5. Blocking</h3>
+  <ul>
+    <li>Group records by a <strong>blocking key</strong> (such as postcode). Only compare records in the same block.</li>
+    <li>Example: 1,000 + 1,000 records give 1,000,000 comparisons. With 100 equal blocks it falls to about 10,000. Formula: <strong>comparisons = n squared / b</strong>.</li>
+    <li>Trade-off: reduce comparisons without losing too many true matches.</li>
+  </ul>
+
+  <h3>6. Bloom filters (encoding)</h3>
+  <ul>
+    <li>A <strong>Bloom filter</strong> is a compact bit vector (a string of 0s and 1s). Start with all 0s. Run several hash functions on each element; each gives a position that is set to 1. Parameters: <strong>l</strong> = length, <strong>k</strong> = number of hash functions.</li>
+    <li><strong>Collision:</strong> different elements map to the same bit. It can cause false positives, but also hides which values made which bits, which helps privacy. This balances accuracy and privacy.</li>
+    <li><strong>Fuzzy matching with q-grams:</strong> a <strong>q-gram</strong> is a substring of q characters made with a sliding window. "smith" gives sm, mi, it, th (bi-grams). "smit" gives sm, mi, it, so they share 3 bi-grams and are very similar. The q-grams are hashed into Bloom filters.</li>
+    <li><strong>Similarity:</strong> Jaccard, Dice or Hamming distance. <strong>Dice = 2 x common 1-bits / (1-bits in filter 1 + 1-bits in filter 2).</strong> Example: 2 x 5 / (6 + 5) = about 0.9. Near 1 means very similar.</li>
+    <li><strong>Numbers:</strong> normal q-grams fail (29 and 30 have totally different digits). Instead encode neighbouring values (27 to 31 for 29, 28 to 32 for 30) so close numbers share many values (similarity about 0.86).</li>
+    <li><strong>Privacy limit:</strong> basic Bloom filters give only probable privacy. A <strong>cryptanalysis attack</strong> studies bit frequencies and patterns to guess the original values. Fix: add differential privacy using <strong>randomised response</strong>, which randomly flips bits. Flip probability = 1 / (1 + e^(epsilon/2)). With epsilon = 1.5 it is about 0.3208, so a 9-bit filter flips about 3 bits. This gives bit-level differential privacy.</li>
+  </ul>
+
+  <h3>7. Matching and linkage methods</h3>
+  <ul>
+    <li><strong>Matching</strong> compares records to see if they likely refer to the same entity. <strong>Linkage</strong> decides which matched records are actually linked.</li>
+    <li><strong>Threshold-based:</strong> similarity at least t is a match. Simple, but picking t is hard.</li>
+    <li><strong>Probabilistic (Fellegi-Sunter):</strong> scores each pair using estimated errors in the identifiers.</li>
+    <li><strong>Rule-based:</strong> hand-written rules (same postcode, similar name, same DOB). Hard to maintain.</li>
+    <li><strong>Machine learning:</strong> can be more accurate, but supervised learning needs training data, which may be unavailable. Alternatives: semi-supervised learning, active learning, human help.</li>
+  </ul>
+
+  <h3>8. Evaluation</h3>
+  <ul>
+    <li><strong>Efficiency:</strong> run time, memory, communication size, <strong>reduction ratio</strong> (how much blocking cuts the pairs to compare; higher is better) and <strong>pairs completeness</strong> (how many true matches survive blocking; higher is better). Ideal blocking has both high.</li>
+    <li><strong>Accuracy</strong> uses a confusion matrix: TP (true match found), FP (non-match wrongly called a match), FN (match missed), TN (non-match correctly rejected).</li>
+    <li><strong>Accuracy</strong> = (TP + TN) / (TP + FP + TN + FN). <strong>Precision</strong> = TP / (TP + FP) (few false matches). <strong>Recall</strong> = TP / (TP + FN) (few missed matches). <strong>F1</strong> = 2 x precision x recall / (precision + recall).</li>
+    <li><strong>Privacy</strong> can be measured by mathematical proof or by testing real attacks. Measures: entropy, information gain, false positive rate, privacy budget.</li>
+    <li><strong>Main trade-off:</strong> efficiency, accuracy and privacy. More blocking is faster but may drop matches. More noise is more private but less accurate. More complex matching is more accurate but slower.</li>
+  </ul>
+
+  <h3>9. Industry view</h3>
+  <ul>
+    <li>Names and addresses appear in different formats, so fuzzy and probabilistic matching matter.</li>
+    <li>Uses: retail with banking, insurance trends, and sports (finding restricted people while protecting their details).</li>
+    <li>Challenges: explaining privacy technology simply; messy data (unusual or short names); low awareness; a gap between research and industry.</li>
+  </ul>
+</section>
+
+<section id="p2-m6">
+  <h2>Part 2 / Module 6: Privacy and Security Tools and Frameworks</h2>
+
+  <h3>1. De-identification tools</h3>
+  <ul>
+    <li>Tools automate de-identification to reduce risk while keeping data useful.</li>
+    <li><strong>ARX:</strong> a free, open-source anonymisation tool that supports many methods plus privacy and utility analysis. Others: IBM InfoSphere Optim, Salesforce Security and Privacy, VGS.</li>
+    <li>Humans are still needed to set methods and parameters and judge the privacy-utility result.</li>
+  </ul>
+
+  <h3>2. Encrypting data at rest</h3>
+  <ul>
+    <li><strong>Data at rest:</strong> stored data (files, databases, archives, backups, drives). Encrypting it protects confidentiality, integrity and availability, guards against physical theft and cold-boot attacks, and adds a layer if passwords are stolen.</li>
+    <li>An <strong>encryption key</strong> can be made by hashing a strong passphrase or by generating a strong random key.</li>
+    <li><strong>GPG (GNU Privacy Guard):</strong> a free command-line tool that encrypts a single file at rest or in transit.</li>
+    <li><strong>Symmetric encryption:</strong> one key encrypts and decrypts. Fast and efficient, good for data at rest. The key must be shared securely. Example algorithm: AES-256.</li>
+    <li><strong>Asymmetric encryption:</strong> a public key (shareable) and a private key (secret). Encrypt with the receiver's public key; they decrypt with their private key. No secure key exchange needed, but slower. Good for secure communication.</li>
+    <li>For data at rest, symmetric encryption is enough and more efficient.</li>
+    <li><strong>Problems with single-file encryption:</strong> the original plain file may still exist and be recovered with undelete tools; and editing means decrypt, edit, re-encrypt, which is slow and error-prone.</li>
+    <li><strong>File-system (volume) encryption:</strong> encrypt a whole volume instead, protecting contents, metadata and many files. <strong>VeraCrypt</strong> creates encrypted volumes. <strong>Mount</strong> makes the volume usable as a drive. <strong>Dismount</strong> locks it again.</li>
+  </ul>
+
+  <h3>3. Frameworks and laws</h3>
+  <ul>
+    <li>A <strong>framework</strong> gives structured guidance for managing privacy and security risk.</li>
+    <li>International: NIST Privacy Framework, ISO/IEC 29100. Australian: Essential Eight, Five Safes.</li>
+    <li>Laws: GDPR (Europe), HIPAA (United States), Privacy Act 1988 (Australia).</li>
+    <li><strong>Privacy vs security:</strong> privacy is about how data is collected, used, controlled and shared. Security protects data from unauthorised access and harm. A privacy risk can exist without a breach. Example: an authorised analyst infers sensitive information from shared data.</li>
+  </ul>
+
+  <h3>4. NIST Privacy Framework (2018)</h3>
+  <ul>
+    <li>Manages privacy through enterprise risk management and promotes Privacy by Design.</li>
+    <li><strong>Five functions:</strong> Identify-P (understand privacy risks), Govern-P (governance and policies), Control-P (individuals' control over processing), Communicate-P (explain practices and risks), Protect-P (cyber-related privacy risks).</li>
+    <li>Structure: functions, then categories, then subcategories.</li>
+    <li>Privacy risk can occur across the data lifecycle: collection, retention, logging, generation, transformation, use, disclosure, sharing, transmission and disposal. Harms to people include embarrassment, discrimination and economic loss. Harms to organisations include customers leaving and reputation damage.</li>
+    <li>The Cybersecurity Framework functions are Identify, Protect, Detect, Respond, Recover. Protect-P overlaps with cybersecurity.</li>
+  </ul>
+
+  <h3>5. Essential Eight (ACSC, 2017)</h3>
+  <p>Eight strategies from the Australian Cyber Security Centre to reduce cyber risk: application control; patch applications; configure Microsoft Office macro settings; user application hardening; restrict administrative privileges; patch operating systems; multi-factor authentication; regular backups.</p>
+
+  <h3>6. Five Safes (Australian Bureau of Statistics)</h3>
+  <ul>
+    <li><strong>Safe People:</strong> is the person authorised?</li>
+    <li><strong>Safe Projects:</strong> is the purpose appropriate?</li>
+    <li><strong>Safe Settings:</strong> does the environment prevent unauthorised use?</li>
+    <li><strong>Safe Data:</strong> is the data protected enough?</li>
+    <li><strong>Safe Outputs:</strong> are the results non-disclosive?</li>
+    <li>Risk depends on who uses the data, why, where, how it is protected and what is released.</li>
+    <li><strong>Example:</strong> a company publishes open customer statistics by region and age group. People, projects and settings need no special control. The strong controls are on Safe Data (it must be well aggregated) and Safe Outputs (tables must be checked for disclosure).</li>
+  </ul>
+
+  <h3>7. Industry view and the future</h3>
+  <ul>
+    <li>Tim Scott (Deloitte Australia) discussed Privacy Enhancing Technologies (PETs) at the meeting point of privacy, data collaboration, data science and security: fully homomorphic encryption, secure multi-party computation, synthetic data, trusted execution environments and zero-knowledge proofs. Cryptography protects payments, phones, vehicles, health records and secure communication.</li>
+    <li><strong>Quantum computers</strong> may break much of today's cryptography, so <strong>post-quantum cryptography</strong> is needed.</li>
+    <li><strong>Homomorphic encryption</strong> lets you compute on encrypted data without decrypting it.</li>
+    <li>Cryptographers think about what needs protecting, possible threats, system limits and needed mechanisms, across the whole product lifecycle from privacy impact assessment to fixing real security issues.</li>
+  </ul>
+</section>
+
+<!-- ============================ PART 3 ============================ -->
+
+
+<!-- ============================ MODULE 1 ============================ -->
+<section id="p3-m1">
+  <h2>Part 3 / Module 1: AI Systems and Security Basics</h2>
+
+  <div class="box">
+    <span class="label">Big picture:</span> AI is now inside healthcare, banking and many other areas. Because attackers also want to use or break AI, we need to understand (1) how AI works, (2) normal cyber security, and (3) the new threats that only exist because of AI.
+  </div>
+
+  <h3>1. What is AI and machine learning?</h3>
+  <ul>
+    <li><strong>Artificial Intelligence (AI):</strong> computer systems that copy human behaviour, such as understanding speech, making decisions or spotting faces.</li>
+    <li><strong>Machine Learning (ML):</strong> a way of building AI where the computer <em>learns from examples (data)</em> instead of being given every rule by a programmer.</li>
+    <li><strong>Model:</strong> the result of learning. It is the "brain" that takes an input and gives an output. Example: a model that takes an email and says "spam" or "not spam".</li>
+    <li><strong>Training:</strong> the process of showing the model many examples so it learns.</li>
+    <li><strong>Inference:</strong> using the trained model on new data. Example: the spam filter checking a new email.</li>
+  </ul>
+
+  <h3>2. Labelled and unlabelled data</h3>
+  <ul>
+    <li><strong>Labelled data:</strong> each example comes with the correct answer. Example: photos tagged "cat" or "dog".</li>
+    <li><strong>Unlabelled data:</strong> examples with no answers. Example: a pile of photos with no tags.</li>
+  </ul>
+
+  <h3>3. The three types of machine learning</h3>
+  <dl>
+    <dt>Supervised learning</dt>
+    <dd>Learns from labelled data, like a student with an answer key. Example: spam detection, predicting house prices.</dd>
+    <dt>Unsupervised learning</dt>
+    <dd>Finds patterns in unlabelled data on its own. Example: grouping customers who shop in a similar way.</dd>
+    <dt>Reinforcement learning</dt>
+    <dd>Learns by trying actions and getting rewards or penalties. It needs no ready-made data. Example: AlphaGo learned to win at the game Go by playing itself.</dd>
+  </dl>
+
+  <p><strong>Classic ML methods you may see (optional):</strong> K-Nearest Neighbours (compares a new item to saved examples), Decision Trees and Random Forest (a series of yes/no questions), Naive Bayes (uses probabilities), Linear and Logistic Regression (draws a line through data), Support Vector Machines (finds the best boundary between groups), K-Means (groups similar items), Q-Learning (a reinforcement method).</p>
+
+  <h3>4. From simple models to deep learning</h3>
+  <ul>
+    <li><strong>Structured data:</strong> neat tables, like a spreadsheet. Old methods work well here.</li>
+    <li><strong>Unstructured data:</strong> images, text, speech. Old methods struggle with it.</li>
+    <li><strong>Feature engineering:</strong> a human picks out the useful parts of the data by hand. Example: for fingerprints, experts mark where ridges meet ("minutiae") and feed those points to the model.</li>
+    <li><strong>Neural network:</strong> a model made of layers of small connected units ("neurons") that loosely copy the brain.</li>
+    <li><strong>Multi-Layer Perceptron (MLP):</strong> a neural network with hidden layers between input and output. The hidden layers learn useful features <em>automatically</em>, so no hand-made features are needed.</li>
+    <li><strong>Backpropagation:</strong> the method that fixes the model's mistakes. After each guess, it sends the error backwards through the layers and adjusts them. It is what makes training big networks possible.</li>
+    <li><strong>Deep learning:</strong> neural networks with many hidden layers. Early layers learn simple things (edges), later layers learn complex things (shapes, then whole objects).</li>
+  </ul>
+
+  <h3>5. Models for sequences</h3>
+  <ul>
+    <li><strong>RNN (Recurrent Neural Network):</strong> a network with memory, used when order matters (speech, weather, stock prices).</li>
+    <li><strong>Vanishing gradient problem:</strong> in RNNs, old information fades away, so they forget things from far back.</li>
+    <li><strong>LSTM (Long Short-Term Memory):</strong> a better RNN that holds information for longer.</li>
+  </ul>
+
+  <h3>6. Modern models</h3>
+  <ul>
+    <li><strong>Transformer:</strong> reads the whole input at once, not word by word. It powers ChatGPT-style models.</li>
+    <li><strong>Attention:</strong> the model decides which parts of the input matter most. <strong>Self-attention</strong> compares every word with every other word. Example: in "The dog chased the ball because <em>it</em> was fast", attention links "it" to the right word.</li>
+    <li><strong>LLM (Large Language Model):</strong> a big transformer trained on huge amounts of text. Examples: GPT, BERT, T5.</li>
+    <li><strong>Generative models:</strong> create new content (images, text, music, video) that looks like their training data.</li>
+    <li><strong>GAN (Generative Adversarial Network):</strong> two models compete. A <em>generator</em> makes fakes, and a <em>discriminator</em> tries to tell fake from real. Both get better over time. Used for deepfakes.</li>
+    <li><strong>Diffusion model:</strong> another way to generate images, by slowly turning noise into a picture.</li>
+  </ul>
+
+  <h3>7. Normal cyber security</h3>
+  <p><strong>Security</strong> means protecting data, communication and systems from people who want to steal, change or break them. The three goals are often called <strong>CIA</strong>:</p>
+  <ul>
+    <li><strong>Confidentiality:</strong> only the right people can see the data.</li>
+    <li><strong>Integrity:</strong> the data has not been changed by the wrong people.</li>
+    <li><strong>Availability:</strong> the system works when needed.</li>
+  </ul>
+  <p><strong>Common threats:</strong></p>
+  <dl>
+    <dt>Malware</dt><dd>Harmful software, such as viruses, ransomware or spyware.</dd>
+    <dt>Phishing and social engineering</dt><dd>Tricking people into giving away passwords or money, usually with fake emails or calls.</dd>
+    <dt>DoS (Denial of Service)</dt><dd>Flooding a website or system with traffic so real users cannot use it.</dd>
+    <dt>MITM (Man-in-the-Middle)</dt><dd>An attacker secretly sits between two people and reads or changes their messages.</dd>
+    <dt>Zero-day exploit</dt><dd>An attack on a weakness the maker does not know about yet, so there is no fix ("zero days" to prepare).</dd>
+  </dl>
+  <p><strong>Defence in depth ("belt and suspenders"):</strong> use many layers of protection (firewalls, encryption, multi-factor login, monitoring). If one fails, the others still protect you. Common standards: NIST, ISO 27001/27002 and PCI-DSS.</p>
+
+  <h3>8. Where AI and security meet</h3>
+  <ul>
+    <li><strong>AI helps defenders:</strong> it spots unusual activity and threats faster than people.</li>
+    <li><strong>AI helps attackers:</strong> better phishing, fake voices and videos, and malware that hides from AI detectors.</li>
+    <li><strong>AI itself is a target:</strong> attackers can attack the AI model directly.</li>
+  </ul>
+
+  <h3>9. Threats made worse by AI (misuse)</h3>
+  <dl>
+    <dt>Deepfakes</dt><dd>Very realistic fake video, images or audio of things that never happened. Example: a fake video of a politician saying something offensive.</dd>
+    <dt>AI misinformation and bots</dt><dd>Large networks of fake accounts push false stories, so people cannot tell what is real.</dd>
+    <dt>AI-powered scams</dt><dd>AI writes in a real person's style or clones a voice. Example: a cloned voice of a boss asks staff to send money.</dd>
+  </dl>
+  <p><strong>The key advantage for attackers is scale:</strong> AI lets them do the same attack against thousands of targets.</p>
+
+  <h3>10. Threats against AI models</h3>
+  <dl>
+    <dt>Adversarial attack (evasion attack)</dt>
+    <dd>The attacker makes a tiny, often invisible change to the input so the AI gives the wrong answer. Example: a small sticker on a stop sign makes a self-driving car read it as a speed-limit sign. Example: slightly editing a virus file so the AI malware detector says "safe", while the virus still works.</dd>
+    <dt>Data poisoning</dt>
+    <dd>The attacker puts bad samples into the <em>training data</em>, so the model learns the wrong things.</dd>
+    <dt>Backdoor</dt>
+    <dd>A hidden trigger planted during training. The model works normally until the trigger appears, then it does what the attacker wants.</dd>
+    <dt>Model stealing and inference attacks</dt>
+    <dd>Attackers copy the model, or pull private information out of it by asking it many questions.</dd>
+  </dl>
+
+  <div class="box example">
+    <span class="label">Scenario: fraud detection at a bank.</span> To protect an AI fraud detector: use <strong>adversarial training</strong> (teach it with tricky inputs), use <strong>data validation, encryption and access control</strong> (stop poisoning), and use <strong>AI detection tools</strong> to check whether media is fake.
+  </div>
+
+  <div class="box">
+    <span class="label">What the practice and quiz taught us:</span>
+    <ul>
+      <li><strong>Challenges in securing AI:</strong> data poisoning, adversarial examples and model evasion are real security threats. "Hyperparameter tuning" and "feature scaling" are normal ML steps, not threats.</li>
+      <li><strong>Data integrity</strong> means data stays correct and unchanged by unauthorised people.</li>
+      <li><strong>Robustness</strong> means the model keeps working properly even with strange, noisy or attacked inputs.</li>
+      <li><strong>Differential privacy</strong> adds carefully chosen noise so no single person's data can be picked out, while the overall results stay useful.</li>
+      <li><strong>Model interpretability</strong> means we can see why a model made a decision, which helps spot attacks.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================ MODULE 2 ============================ -->
+<section id="p3-m2">
+  <h2>Part 3 / Module 2: AI in Industrial Systems (ICS and OT)</h2>
+
+  <div class="box">
+    <span class="label">Big picture:</span> AI is now added to machines that run factories, power grids and water plants. It makes them safer and more efficient, but it also gives attackers new ways in. Mistakes here can hurt people, not just data.
+  </div>
+
+  <h3>1. Key terms</h3>
+  <dl>
+    <dt>ICS (Industrial Control System)</dt><dd>The computers and controllers that run physical processes, like a steel plant.</dd>
+    <dt>OT (Operational Technology)</dt><dd>Technology that controls physical machines and processes (as opposed to normal office IT).</dd>
+    <dt>PLC (Programmable Logic Controller)</dt><dd>A small industrial computer that controls a machine, like a conveyor belt or a furnace.</dd>
+    <dt>Critical infrastructure</dt><dd>Systems society depends on, such as power, water, transport and healthcare.</dd>
+    <dt>Sensor</dt><dd>A device that measures something (temperature, vibration, position) and sends the data to the system.</dd>
+  </dl>
+
+  <h3>2. How AI helps (example: a steel plant)</h3>
+  <ul>
+    <li><strong>Anomaly detection:</strong> the AI learns what "normal" looks like and flags anything unusual. Example: a red-hot steel beam leaves its normal path on the conveyor, and the AI stops the line immediately, without waiting for a human to hit the emergency stop.</li>
+    <li><strong>Predictive maintenance:</strong> the AI predicts a machine will fail <em>before</em> it does, so it can be fixed early. Example: furnace temperature drifts from its ideal curve, so the AI warns staff and suggests changes to gas flow.</li>
+    <li><strong>Intrusion Detection System (IDS):</strong> watches network traffic for strange behaviour. Example: a warehouse climate-control device suddenly sends lots of data into the factory network at night.</li>
+  </ul>
+
+  <h3>3. New risks that AI adds</h3>
+  <dl>
+    <dt>Adversarial and evasive inputs</dt>
+    <dd>An attacker who controls a sensor sends slightly wrong values on purpose. They are small, so they look like normal noise, but they push the AI into a bad decision. Example: a hacked furnace sensor makes the AI change settings and ruin the steel batch.</dd>
+    <dt>Data poisoning</dt>
+    <dd>Bad samples in the training data create a weak model or a hidden backdoor. It is hard to catch because training data is huge and nobody checks every item. Example: a rival company poisons data so your maintenance AI does badly on one niche product.</dd>
+    <dt>Privacy and model theft</dt>
+    <dd>An attacker can copy your model or work out private details just by asking it many questions. Example: guessing which ore supplier a plant uses by watching how the model responds.</dd>
+    <dt>Complexity and old equipment</dt>
+    <dd>Industrial machines last decades and are often custom-built. Connecting AI to them creates gaps and mistakes that attackers can use.</dd>
+    <dt>Human trust problems</dt>
+    <dd>If an attacker makes the AI raise false alarms, workers stop trusting it and may skip safe procedures. Then the attacker uses that relaxed attitude. This is a two-step attack: first damage the AI's reputation, then exploit people.</dd>
+    <dt>Attackers using AI</dt>
+    <dd>Attackers use AI for better research on targets, more precise attacks and better hiding.</dd>
+  </dl>
+
+  <div class="box example">
+    <span class="label">Real case: Stuxnet (2010).</span> A computer worm targeted PLCs in an Iranian uranium plant. It quietly changed the speed of centrifuges so they wore out and broke. Lesson: attacks on control systems can cause real physical damage. With AI, even a sensor can become a way in.
+  </div>
+  <div class="box example">
+    <span class="label">Real case: T-Mobile (2023).</span> An unsecured AI-linked API exposed 37 million customer records. The AI answered questions with real customer data. This differs from the Optus 2022 breach, where the API itself was open.
+  </div>
+  <div class="box example">
+    <span class="label">Real case: biometric time clocks.</span> Face-scan clock-in systems got bypassed with photos by workers who did not like them. Lesson: if a security control annoys people, they will find a way around it.
+  </div>
+
+  <h3>4. Securing AI in industry</h3>
+  <ul>
+    <li><strong>Match security to the use case.</strong> Think about data sensitivity, how risky the environment is, how attractive a target you are, and the rules you must follow (medical data, payments).</li>
+    <li>Do <strong>risk assessments</strong> that include the AI, and build <strong>threat models</strong> for adversarial attacks, poisoning and model theft.</li>
+    <li><strong>AI data pipeline:</strong> collect data, clean it, train, validate, deploy, then keep updating. Every step can be attacked, so secure all of them.</li>
+    <li><strong>DevOps:</strong> development and operations working together for fast delivery. <strong>DevSecOps:</strong> adds security to every step. <strong>AI DevSecOps:</strong> adds AI-specific security.</li>
+    <li><strong>MITRE ATLAS:</strong> a public map of how attackers attack AI, step by step, like a menu of tactics and techniques.</li>
+  </ul>
+
+  <div class="box">
+    <span class="label">What the dialogue and practice taught us:</span>
+    <ul>
+      <li><strong>How AI changes the attacker's approach:</strong> with AI in the loop, an attacker no longer has to control the machine directly. They can fool or poison the AI that controls it.</li>
+      <li><strong>Riskiest stage of the AI pipeline:</strong> <em>inference</em> (when the AI is live). It acts straight on sensor data and decisions can affect the physical world right away.</li>
+      <li><strong>Context matters:</strong> a power grid needs very strong security (defence in depth, segmentation, monitoring, human oversight). A smart home needs sensible basics (updates, strong login). Using grid-level security in a home is wasteful. Using home-level security on a grid is dangerous.</li>
+      <li><strong>Quiz topics:</strong> feature extraction reduces data size and helps find adversarial patterns; data privacy challenges include law compliance, leaks at inference and hard-to-anonymise data; differential privacy protects individuals while keeping results accurate; interpretability helps spot attacks.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================ MODULE 3 ============================ -->
+<section id="p3-m3">
+  <h2>Part 3 / Module 3: Security and Ethics Risks Inside AI Models</h2>
+
+  <div class="box">
+    <span class="label">Big picture:</span> This module looks at attacks on the model itself, and at harm the model can cause even without an attacker. It also covers ethics: privacy, surveillance and fairness.
+  </div>
+
+  <h3>1. Threat models: what does the attacker know?</h3>
+  <p>A <strong>threat model</strong> describes what an attacker knows and can reach. More knowledge means a stronger attack.</p>
+  <ul>
+    <li><strong>Black box:</strong> the attacker only sends inputs and sees outputs (like using a public chatbot).</li>
+    <li><strong>Grey box:</strong> the attacker knows some details (maybe the type of model).</li>
+    <li><strong>White box:</strong> the attacker knows everything: structure, parameters (the numbers inside the model), updates.</li>
+  </ul>
+
+  <h3>2. Poisoning and backdoors</h3>
+  <ul>
+    <li><strong>Poisoning:</strong> changing the training data to harm the model.</li>
+    <li><strong>Targeted poisoning:</strong> the model is wrong only for certain inputs. Example: emails addressed to one person are always marked as safe.</li>
+    <li><strong>Backdoor:</strong> the model behaves normally until a <strong>trigger</strong> appears. Example: a phishing email with a certain hidden mark is classified as safe. Example: a road-sign AI that misreads stop signs only when a small sticker is present.</li>
+    <li><strong>How poison gets in:</strong> data collected from untrusted websites, unsafe development platforms, insiders, or supply-chain attacks (a tampered tool or dataset).</li>
+    <li><strong>Similar idea:</strong> SQL injection. If input is not cleaned, an attacker can sneak harmful commands in. In the same way, unchecked training data can carry poison.</li>
+    <li><strong>Federated learning:</strong> many devices train a shared model without sharing raw data. A malicious device can still send poisoned updates and damage the shared model.</li>
+  </ul>
+
+  <h3>3. Inference and leakage attacks</h3>
+  <p>Here the <em>model itself</em> leaks information, usually through a normal public API. Unlike a database breach, the attacker never touches the database.</p>
+  <dl>
+    <dt>Membership inference</dt>
+    <dd>Finding out whether a certain person's record was in the training data. Works because models are more confident on data they saw during training. Example: a rival checks if a patient took part in a cancer drug trial, which reveals their illness.</dd>
+    <dt>Model inversion</dt>
+    <dd>Working backwards from a model's output to rebuild private input. Example: rebuilding private emails from the numbers (embeddings) the model produced.</dd>
+    <dt>Data extraction (attribute inference)</dt>
+    <dd>Using a partly known record to fill in the missing private part. Example: knowing someone's age and job, the attacker guesses their savings amount from a loan model.</dd>
+  </dl>
+
+  <h3>4. Model stealing</h3>
+  <ul>
+    <li>The attacker sends many queries, records the answers, and trains a copy called a <strong>surrogate model</strong>.</li>
+    <li>It is like knowledge distillation (a "student" model copying a "teacher").</li>
+    <li>Other ways: stolen access to the model files, or models accidentally posted publicly.</li>
+    <li>Harm: lost income, lost advantage, and the stolen copy becomes a white box the attacker can probe freely.</li>
+    <li>Example: claims that DeepSeek copied OpenAI behaviour (not proven). Stanford's Alpaca copied ChatGPT-like behaviour with few queries.</li>
+  </ul>
+
+  <h3>5. Harmful outputs and alignment</h3>
+  <ul>
+    <li><strong>Alignment:</strong> making sure the AI's behaviour matches human values and goals.</li>
+    <li>Reasons for misaligned behaviour: biased training data, badly chosen goals, changes in the situation, and unclear inputs.</li>
+    <li><strong>Guardrails and filters:</strong> extra checks on inputs and outputs that block harmful content. Example: liveness checks in face login to stop photo tricks. Example: OpenAI tightening rules after the viral Studio Ghibli image trend.</li>
+  </ul>
+
+  <h3>6. Privacy, surveillance and ethics</h3>
+  <ul>
+    <li>AI can watch people at huge scale (face recognition, text analysis).</li>
+    <li><strong>Re-identification:</strong> AI can link "anonymous" data back to real people.</li>
+    <li><strong>Dual-use:</strong> a tool that can be used for good or harm.</li>
+    <li>Core values: fix bias, keep checking fairness, be transparent, and protect human choice (autonomy).</li>
+  </ul>
+
+  <div class="box">
+    <span class="label">What the dialogues and practice taught us:</span>
+    <ul>
+      <li><strong>Poisoning vs adversarial attack:</strong> poisoning happens during <em>training</em> and damages the model itself. An adversarial attack happens at <em>inference</em> and fools a healthy model with a tricky input.</li>
+      <li><strong>Spotting a backdoor:</strong> works normally until a specific trigger appears, then gives the same wrong answer every time. Ordinary poisoning shows up as wide, general errors.</li>
+      <li><strong>Why poisoning is often higher priority in medicine:</strong> it is always present, hard to find, affects many patients, and is slow to fix (find the bad data, retrain, re-test).</li>
+      <li><strong>E-commerce incident case:</strong> weird recommendations suggest poisoning, the VIP purchase leak is an inference attack (privacy failure), and harmful budgeting advice is an alignment failure. Privacy failure = the model leaks what it knows. Alignment failure = the model does or says the wrong thing.</li>
+      <li><strong>Practice set topics:</strong> data poisoning, inference attacks and adversarial examples are security risks; adversarial attack defences include ensembling, feature squeezing and robust training; safe deployment needs monitoring, fail-safes and audits; defences for poisoning include data validation and anomaly detection; encryption (TLS) and multi-factor login secure communication; differential privacy protects training data.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================ MODULE 4 ============================ -->
+<section id="p3-m4">
+  <h2>Part 3 / Module 4: Defences (AI Controls) and Testing</h2>
+
+  <div class="box">
+    <span class="label">Big picture:</span> Now we learn how to defend. There is no perfect defence, so you pick controls by balancing protection, model performance and cost.
+  </div>
+
+  <h3>1. What is a security control?</h3>
+  <p>A <strong>control</strong> (or guardrail) is any measure that lowers the chance a threat succeeds. Three kinds:</p>
+  <ul>
+    <li><strong>Technical:</strong> software protections such as encryption, differential privacy and certified robustness.</li>
+    <li><strong>Administrative:</strong> rules and processes such as policies, staff training and incident response plans.</li>
+    <li><strong>Operational:</strong> things people do day to day, such as content filtering, audits, security testing and contingency plans.</li>
+  </ul>
+
+  <h3>2. Know your enemy: why attackers target AI</h3>
+  <ul>
+    <li><strong>Unauthorised manipulation:</strong> change the AI's decisions. Example: fool a bank's credit check so an ineligible person gets approved.</li>
+    <li><strong>Privacy breach:</strong> steal sensitive training data (health, money). It sells well on the black market.</li>
+    <li><strong>Reverse engineering:</strong> copy the model for money or to plan more attacks.</li>
+  </ul>
+
+  <h3>3. Defences for evasion (adversarial) attacks</h3>
+  <p><strong>Evasion attack:</strong> a tiny, hard-to-see change to the input that makes the model wrong. Example: adding small noise to a panda photo so the AI says "gibbon". The altered input is called an <strong>adversarial example</strong>.</p>
+  <dl>
+    <dt>Adversarial training</dt>
+    <dd>Add adversarial examples to the training set so the model learns to handle them. Simple and effective, but only protects against the attack types you included.</dd>
+    <dt>Gradient masking</dt>
+    <dd>Hides or smooths the model's behaviour so attackers cannot easily calculate how to fool it. Can reduce normal accuracy and clever attackers can get around it.</dd>
+    <dt>Certified robustness (randomised smoothing)</dt>
+    <dd>Gives a <em>mathematical guarantee</em> that small changes within a set range cannot change the answer. Works by adding random noise during training and testing. Limit: the guaranteed range shrinks for large, complex inputs ("curse of dimensionality").</dd>
+    <dt>Defensive distillation</dt>
+    <dd>Train a second "student" model on the softened outputs of a "teacher" model. Makes the student harder to fool. No guarantee, and it needs two models, so more computing.</dd>
+  </dl>
+  <p><strong>Robustness</strong> means the model keeps working correctly when inputs are strange, noisy or attacked.</p>
+
+  <h3>4. Defences for poisoning</h3>
+  <ul>
+    <li><strong>Data sanitisation:</strong> clean and check data before training.</li>
+    <li><strong>Outlier detection:</strong> find samples that look very different from the rest.</li>
+    <li><strong>Robust optimisation:</strong> train in a way that is less affected by a few bad samples.</li>
+    <li><strong>Access control:</strong> only authorised people can change training data.</li>
+    <li><strong>Audit trails:</strong> logs and checks that record who did what, plus staff training and incident response.</li>
+  </ul>
+
+  <h3>5. Defences for inversion (inference) attacks</h3>
+  <dl>
+    <dt>Differential privacy</dt><dd>Add carefully measured random noise so that nobody can tell whether any one person's data was used, but overall results stay useful.</dd>
+    <dt>Homomorphic encryption</dt><dd>A way to calculate on data while it is still encrypted, so the data is never exposed.</dd>
+    <dt>Secure multi-party computation (SMC)</dt><dd>Several parties calculate a result together without any of them revealing their own data.</dd>
+  </dl>
+
+  <h3>6. Defences for model extraction (stealing)</h3>
+  <dl>
+    <dt>Watermarking</dt><dd>Hide a secret signature in the model so a stolen copy can be proved to be yours.</dd>
+    <dt>Output perturbation</dt><dd>Add small noise to answers so a copy is less accurate. The more noise, the safer but the less useful.</dd>
+    <dt>API rate limiting</dt><dd>Limit how many questions one user can ask, so building a copy takes too long.</dd>
+  </dl>
+
+  <h3>7. Defences for generative AI (GenAI)</h3>
+  <dl>
+    <dt>Prompt injection</dt><dd>A prompt crafted to make a language model ignore its rules and do something unintended. Example: hidden instructions in a document or web page.</dd>
+    <dt>Jailbreak</dt><dd>A prompt designed to get past safety rules so the model produces forbidden content. Similar to prompt injection, but with the goal of breaking safety limits.</dd>
+    <dt>Content filters</dt><dd>Tools that check the prompt going in and the answer coming out, for things like hate, violence or self-harm. They can be rule-based or AI-based. Types: text, image, multimodal; input and output filtering.</dd>
+    <dt>Metaprompts</dt><dd>Fixed instructions given to the model about how to behave ("do this, not that"). In one test, with no metaprompt 67 out of 100 attacks worked. With "don't" style prompts 12 worked. With prompts that say what to do in dangerous situations, fewer than 1 worked.</dd>
+    <dt>Grounding and RAG</dt><dd><strong>Grounding</strong> links answers to trusted sources, reducing hallucinations (made-up answers). <strong>RAG (Retrieval-Augmented Generation)</strong> looks up real information from a database or search before answering. Example: fetching today's exchange rate instead of using old training data.</dd>
+  </dl>
+  <p>No single defence stops prompt injection, so <strong>monitoring and detection</strong> are the practical approach.</p>
+
+  <h3>8. Security by design</h3>
+  <ul>
+    <li><strong>DevSecOps:</strong> security in every stage of building and running software.</li>
+    <li><strong>Least privilege:</strong> give the AI and users only the access they truly need.</li>
+    <li><strong>Encryption:</strong> protect data when stored (at rest) and when moving (in transit).</li>
+    <li><strong>Monitoring, testing, auditing:</strong> keep logs and find weaknesses early.</li>
+  </ul>
+
+  <h3>9. How to choose controls</h3>
+  <ul>
+    <li><strong>Guaranteed controls</strong> (differential privacy, certified robustness, homomorphic encryption) are provably safe but often make the model less accurate or slower.</li>
+    <li><strong>Practical (empirical) controls</strong> (adversarial training, content filters, defensive distillation) cost less in accuracy but cannot be proven and attackers may adapt.</li>
+    <li><strong>No free lunch:</strong> there is no control that gives perfect protection with zero cost. You balance <strong>security, usefulness (performance) and cost</strong>.</li>
+    <li>Example: defensive distillation needs a second model (more cost) but often keeps accuracy high, so it can be worth it.</li>
+  </ul>
+
+  <h3>10. When guardrails fail (real cases)</h3>
+  <ul>
+    <li><strong>Samsung (2023):</strong> an employee pasted secret documents into an LLM, leaking designs. Fix: prompt checks, filters, access control.</li>
+    <li><strong>Google Bard (2023) and ChatGPT (2024):</strong> jailbreaks got around filters to produce harmful content. Fix: stronger filters and prompt shielding.</li>
+    <li><strong>Microsoft RAG attack (2024):</strong> adversarial inputs caused wrong answers. Fix: adversarial training and checking retrieved context.</li>
+    <li><strong>DeepSeek (2025):</strong> its guardrails failed against 50 jailbreak attempts. Fix: content filtering and metaprompts.</li>
+    <li>Lesson: practical controls can fail. Plan for failure with layers and testing.</li>
+  </ul>
+
+  <h3>11. Testing and benchmarking</h3>
+  <ul>
+    <li><strong>Security testing:</strong> hunting for weaknesses such as data leaks and prompt injection.</li>
+    <li><strong>Benchmarking:</strong> measuring an AI against set tasks and data to see how well it performs.</li>
+    <li><strong>Red team:</strong> plays the attacker. <strong>Blue team:</strong> plays the defender. <strong>Purple team:</strong> both work together and share findings.</li>
+    <li>Measure four things: robustness, performance, continuous monitoring, and compliance (laws like GDPR and HIPAA, plus audit logs).</li>
+    <li><strong>RobustBench:</strong> a public leaderboard that ranks models on how well they resist adversarial attacks.</li>
+  </ul>
+
+  <div class="box">
+    <span class="label">What the dialogues and practice taught us:</span>
+    <ul>
+      <li><strong>Input sanitisation</strong> cleans prompts before the model sees them. It can be bypassed by rewording, and a strict filter blocks real users and adds delay and cost.</li>
+      <li><strong>Where to be strict:</strong> an internal helpdesk (known users, high stakes) can accept strict filters. A public chatbot needs a lighter filter plus output filters and monitoring so real customers are not blocked.</li>
+      <li><strong>Travel chatbot case:</strong> a harmful request disguised as "creative writing" got past the input filter. The output check also missed it. Lesson: output checks must judge what content <em>enables</em>, not only its topic. Teams aiming for high engagement may loosen filters, which opens a gap.</li>
+      <li><strong>Practice set topics:</strong> accurate statements about AI security challenges; AI models can be attacked during training and during use; risk assessment is key; layered security; continuous monitoring is the key principle in a changing threat landscape; encryption protects data confidentiality and integrity.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================ MODULE 5 ============================ -->
+<section id="p3-m5">
+  <h2>Part 3 / Module 5: Responsible AI, Regulation and Governance</h2>
+
+  <div class="box">
+    <span class="label">Big picture:</span> AI can be biased and unfair if it learns from biased data. Responsible AI is about building AI that is fair, safe and trusted, and following the rules.
+  </div>
+
+  <h3>1. What is responsible AI?</h3>
+  <p><strong>Responsible AI</strong> means building and using AI in ways that respect people's rights, privacy, fairness and safety. Six core principles:</p>
+  <dl>
+    <dt>Fairness</dt><dd>Treat all groups equally. The system should not give worse results to some people.</dd>
+    <dt>Inclusiveness</dt><dd>Work well for people of all backgrounds and abilities.</dd>
+    <dt>Transparency and explainability</dt><dd>People can understand how the AI makes decisions.</dd>
+    <dt>Accountability</dt><dd>A real person or team is responsible for the AI's results.</dd>
+    <dt>Privacy and security</dt><dd>Protect people's data and the system itself.</dd>
+    <dt>Reliability (and safety)</dt><dd>The AI works correctly and steadily, even in surprise situations.</dd>
+  </dl>
+
+  <h3>2. Bias and fairness</h3>
+  <ul>
+    <li><strong>Bias:</strong> a built-in unfair lean in the AI's results. It usually comes from the training data or from how the model was designed.</li>
+    <li><strong>Why it matters:</strong> biased AI can discriminate in jobs, loans, policing and healthcare.</li>
+    <li><strong>GIGO:</strong> "garbage in, garbage out". Bad data gives bad results.</li>
+  </ul>
+  <div class="box example">
+    <span class="label">Real examples of bias:</span>
+    <ul>
+      <li><strong>Gender Shades study:</strong> face tools from IBM, Microsoft and Face++ were much less accurate for women and dark-skinned faces.</li>
+      <li><strong>COMPAS:</strong> a tool that predicted re-offending rated a person with no later offences as high risk and another with three later offences as low risk, showing racial bias.</li>
+      <li><strong>Microsoft Tay (2016):</strong> a chatbot taught racist content by users within 24 hours because it had no guardrails.</li>
+      <li><strong>iTutor Group:</strong> its AI automatically rejected older applicants and the company paid $365,000 to settle a US case.</li>
+      <li><strong>Google Gemini images:</strong> engineers over-corrected for bias, so it produced historically wrong images (like unrealistic founding fathers).</li>
+    </ul>
+  </div>
+
+  <h3>3. Types of data bias</h3>
+  <ul>
+    <li><strong>Sample (selection) bias:</strong> the training data does not match the real population.</li>
+    <li><strong>Exclusion bias:</strong> certain groups are left out of the data. Example: a face tool trained mostly on white men.</li>
+    <li><strong>Confirmation (observer) bias:</strong> people labelling data see what they already believe and ignore the rest.</li>
+    <li><strong>Labelling bias:</strong> human labellers carry their own views (gender, race, religion) into the labels.</li>
+  </ul>
+  <p><strong>How to build fairer AI:</strong> use diverse, representative data; use fairness-aware algorithms; remove bias while labelling; audit the results regularly.</p>
+
+  <h3>4. AI governance and regulation</h3>
+  <ul>
+    <li><strong>Governance:</strong> the rules, roles and processes that make sure AI is built and used responsibly and legally. It should start at the design stage.</li>
+    <li><strong>Compliance:</strong> following laws and standards.</li>
+  </ul>
+  <dl>
+    <dt>EU AI Act</dt>
+    <dd>The first big law on AI in the EU. It sorts AI by risk: <em>unacceptable</em> (banned), <em>high risk</em> (strict checks, e.g. hiring and medical), <em>limited risk</em> (must be open, e.g. chatbots and deepfakes) and <em>minimal risk</em> (no rules).</dd>
+    <dt>US AI Bill of Rights (2022)</dt>
+    <dd>Five principles: safe and effective systems; protection from algorithmic discrimination; data privacy; notice and explanation; human alternatives and fallback.</dd>
+    <dt>Australian Government policy (2024)</dt>
+    <dd>Rules for responsible use of AI in government, focusing on safety, openness and accountability, with more focus on innovation than the US approach.</dd>
+    <dt>ISO/IEC 42001</dt>
+    <dd>An international standard for managing AI. It works in any country, unlike a single country's law.</dd>
+  </dl>
+  <p><strong>Tools and frameworks:</strong> OWASP Top 10 for LLMs (a checklist of common weaknesses), SAIF (secure AI framework, security from design to launch), NIST AI Risk Management Framework (a method to find and manage AI risks), FAICP (AI lifecycle approach), and Australia's RAID framework for defence AI.</p>
+
+  <h3>5. Best practices</h3>
+  <ul>
+    <li><strong>Strict data checks and prompt handling:</strong> validate inputs and filter harmful prompts.</li>
+    <li><strong>Harden models:</strong> adversarial training, differential privacy, encryption, filters, anomaly detection.</li>
+    <li><strong>Monitor and log:</strong> keep records so decisions can be reviewed and challenged (example: a fraud flag a customer can appeal).</li>
+    <li><strong>Cultural commitment:</strong> follow ethics at every stage of the AI's life.</li>
+    <li><strong>Diverse team:</strong> managers, HR, legal, security, IT and operations all give input.</li>
+    <li><strong>Training and education:</strong> teach staff about AI ethics, privacy and security.</li>
+    <li><strong>Frameworks and documents:</strong> keep clear records of data, labelling, training and testing.</li>
+    <li><strong>Continuous improvement:</strong> keep fixing and updating based on feedback.</li>
+  </ul>
+
+  <div class="box example">
+    <span class="label">Role play: advising a CEO on a hiring AI.</span> The CEO wanted to launch fast. The advice: explain risks in business terms (bias can lose clients and cause legal trouble); remember that high accuracy does not mean fairness, because overall accuracy can hide bad results for some groups; run a bias audit, document limits, add human review, monitor after launch; check laws such as the EU AI Act that treat hiring AI as high risk; and show that responsible AI can win clients.
+  </div>
+
+  <div class="box example">
+    <span class="label">Dialogue: dynamic pricing AI.</span> An online shop wanted to launch a profit-maximising pricing AI before a big sale. Risks: <strong>fairness</strong> (some customers or places charged more), <strong>transparency</strong> (nobody can explain why prices changed), and <strong>reliability and accountability</strong> (old data may not fit new demand, and no one owns the result). Customers are hurt first. Fix: an AI review board (project lead, legal, fairness expert, customer support) that signs off before launch. Next step suggested: write testable rules such as fairness limits and price change limits.
+  </div>
+
+  <div class="box">
+    <span class="label">What the practice taught us:</span> Responsible AI principles are design rules. Governance means clear ownership and sign-off before launch. Policies work best when they are specific and testable.
+  </div>
+</section>
+
+<!-- ============================ MODULE 6 ============================ -->
+<section id="p3-m6">
+  <h2>Part 3 / Module 6: Future of AI and Emerging Risks</h2>
+
+  <div class="box">
+    <span class="label">Big picture:</span> AI is getting more powerful quickly, with a market expected to reach about $267 billion by 2027. This module looks ahead at new uses, new technologies and new risks, and how to stay safe.
+  </div>
+
+  <h3>1. Future uses of AI</h3>
+  <ul>
+    <li><strong>Healthcare:</strong> AI could lead roles such as robotic surgery and diagnosis.</li>
+    <li><strong>Education:</strong> AI tutors with personalised lessons.</li>
+    <li><strong>Business:</strong> AI helps make decisions and automates complex work and customer service.</li>
+    <li><strong>Transport:</strong> self-driving cars and smarter traffic.</li>
+    <li>Also: manufacturing, national security and cybersecurity.</li>
+  </ul>
+
+  <h3>2. The history of AI</h3>
+  <ul>
+    <li><strong>1950s:</strong> the foundations, including the Turing test (a test of whether a machine can seem human).</li>
+    <li><strong>1960s-1970s:</strong> rule-based expert systems that help make decisions.</li>
+    <li><strong>1980s-1990s:</strong> machine learning, where systems learn from data.</li>
+    <li><strong>2000s-now:</strong> narrow AI that does complex tasks using language, vision and robotics.</li>
+  </ul>
+  <p><strong>Three levels of AI:</strong></p>
+  <dl>
+    <dt>Narrow AI (weak AI)</dt><dd>The AI we have today. Very good at one specific task, sometimes better than humans. Examples: image recognition, spam filters, chess computers.</dd>
+    <dt>General AI (AGI, strong AI)</dt><dd>Does not exist yet. An AI with human-level intelligence that can learn and adapt to any thinking task.</dd>
+    <dt>Super AI (ASI)</dt><dd>Does not exist yet. An AI that would be smarter than humans in every way.</dd>
+  </dl>
+
+  <h3>3. Trends and new technologies (and their security risks)</h3>
+  <dl>
+    <dt>LLMs, SLMs and RAG</dt><dd>Large language models, small language models and retrieval-augmented systems drive most change today.</dd>
+    <dt>Custom AI models</dt><dd>Built for one task using specific data (e.g. hospital data). Better accuracy and control, but narrow data can make them more biased and easier to attack.</dd>
+    <dt>Synthetic data</dt><dd>Artificial data that copies the patterns of real data without using real people's details. It can protect privacy and add variety.</dd>
+    <dt>Quantised models</dt><dd>Models shrunk by using less precise numbers (like 8-bit instead of 16 or 32) so they run faster and cost less, with a small drop in accuracy. <strong>Security risk:</strong> researchers showed a model can look safe at full size but turn harmful after quantising. Someone who downloads and shrinks it triggers the hidden behaviour (for example, inserting brand adverts).</dd>
+    <dt>Multimodal AI</dt><dd>Handles text, images and audio together (unimodal means one type only). More data types means more ways to attack and more ethical risk.</dd>
+    <dt>Agentic AI</dt><dd>AI that decides and acts on its own without a person. It is powerful but can be biased and lacks emotional understanding, so human oversight is needed.</dd>
+    <dt>Quantum AI</dt><dd>Quantum computers could cut the time and cost of training big models and allow quantum encryption that normal computers cannot break.</dd>
+    <dt>Federated AI</dt><dd>Models trained across many devices (phones, cameras) without sharing raw data, which helps privacy. Risks: malicious devices can poison the shared model, and attackers can still infer training data from model updates.</dd>
+    <dt>Bitnet models</dt><dd>Models using only three values (about 1.58 bits) per weight instead of 16 bits. Much faster and uses less power with good accuracy. The low precision may make model theft and inference attacks easier.</dd>
+  </dl>
+
+  <h3>4. Best practices for the future</h3>
+  <ul>
+    <li><strong>Multi-layered AI defences:</strong> combine different AI models (generative models to detect threats and discriminative models to analyse behaviour) for layered security.</li>
+    <li><strong>Zero-trust authentication:</strong> never trust by default. Continuously check every user and device. This lowers insider threat and unauthorised access.</li>
+    <li><strong>AI versus AI:</strong> use AI-powered threat tools to fight AI-based attacks and stay ahead.</li>
+    <li><strong>Fail-safes and kill switches:</strong> reliable ways to shut down or limit AI systems, especially AGI, if something goes wrong.</li>
+  </ul>
+
+  <div class="box example">
+    <span class="label">Dialogue: risks of a future AGI in healthcare.</span> Scenario: an AGI plans diagnosis and treatment for a whole country. Biggest societal risk: <strong>bias across population groups</strong>, because the errors look normal in totals but harm some groups and reduce trust. A company under market pressure may use the cheapest data and skip fairness checks. An independent group of academics and non-profits can publish shared tests and run audits. A good safeguard is a <strong>pre-deployment fairness gate</strong>: independent bias testing on data from all groups, limits on gaps between groups, sign-off from a mixed board, and monitoring with a rollback plan.
+  </div>
+
+  <div class="box example">
+    <span class="label">Dialogue: risk and governance trade-offs.</span>
+    <ul>
+      <li><strong>Medical AI risk:</strong> <em>over-reliance (automation bias)</em>. Doctors may stop checking because the AI is usually right. Also <em>drift</em>: it can behave differently when equipment or patients change.</li>
+      <li><strong>Who holds power:</strong> regulators can require audits, tech companies control the models, and hospitals carry patient responsibility. Conflict: speed and profit vs safety.</li>
+      <li><strong>Self-driving cars:</strong> the main risk shifts to <em>adversarial attacks and instant failure</em>, since there is no time for a person to step in.</li>
+      <li><strong>Governance choice:</strong> strict government regulation for self-driving cars. Medical AI can combine industry self-governance (professional standards, peer review) with regulation. Self-governance is faster but needs independent oversight to be trusted.</li>
+    </ul>
+  </div>
+
+  <div class="box">
+    <span class="label">Summary:</span> AI offers huge benefits, but ethics, law and security must be handled from the start. Predict future risks, understand the limits of AGI, and follow best practices to keep AI safe.
+  </div>
+  <div class="box">
+    <span class="label">What the practice taught us:</span> AI defences include anomaly detection, intrusion prevention, risk assessment and threat modelling. AI can use neural networks, simulate attacks to improve defences, and analyse network traffic in real time. Model inversion means working out sensitive details from model outputs. Lack of security causes weak defence against adversarial attacks, damaged data integrity and unauthorised access. Robust techniques include defensive distillation and adversarial training. Adversarial examples are hard because the changes are subtle and non-obvious.
+  </div>
+</section>
+
+<!-- ============================ GLOSSARY ============================ -->
+<section id="p3-glossary">
+  <h2>Part 3 / Glossary: Every Term in Simple Words</h2>
+  <p>Terms are in alphabetical order.</p>
+  <dl>
+    <dt>Adversarial example</dt><dd>An input changed slightly (often invisibly) to make an AI give the wrong answer.</dd>
+    <dt>Adversarial training</dt><dd>Teaching a model with adversarial examples so it learns to resist them.</dd>
+    <dt>AGI (Artificial General Intelligence)</dt><dd>A future AI with human-level intelligence across any thinking task. Does not exist yet.</dd>
+    <dt>Agentic AI</dt><dd>AI that makes decisions and takes actions on its own.</dd>
+    <dt>Alignment</dt><dd>Making sure an AI's behaviour matches human values and goals.</dd>
+    <dt>Anomaly detection</dt><dd>Spotting behaviour that is unusual compared with normal.</dd>
+    <dt>API</dt><dd>A doorway that lets programs talk to each other, such as a chatbot's public connection.</dd>
+    <dt>Attention / self-attention</dt><dd>How a transformer decides which parts of the input matter most.</dd>
+    <dt>Backdoor</dt><dd>A hidden trigger in a model that makes it misbehave only when the trigger appears.</dd>
+    <dt>Backpropagation</dt><dd>The method that sends errors backwards through a network to fix its weights.</dd>
+    <dt>Bias</dt><dd>An unfair lean in an AI's results, often from biased data.</dd>
+    <dt>Black box / grey box / white box</dt><dd>How much an attacker knows about a model: only inputs and outputs / some details / everything.</dd>
+    <dt>Blue team / red team / purple team</dt><dd>Defenders / attackers (for testing) / both working together.</dd>
+    <dt>Certified robustness</dt><dd>A defence with a mathematical guarantee that small changes cannot flip the model's answer.</dd>
+    <dt>CIA (Confidentiality, Integrity, Availability)</dt><dd>The three goals of security: keep data private, keep it correct, keep systems working.</dd>
+    <dt>Content filter</dt><dd>A tool that checks inputs and outputs of an AI for harmful content.</dd>
+    <dt>Control (guardrail)</dt><dd>A measure that lowers the chance of a threat succeeding.</dd>
+    <dt>Data extraction</dt><dd>Using a model to fill in missing private details of a record.</dd>
+    <dt>Data integrity</dt><dd>Data stays correct and is not changed by unauthorised people.</dd>
+    <dt>Data poisoning</dt><dd>Putting bad samples in training data to damage a model.</dd>
+    <dt>Deep learning</dt><dd>Neural networks with many layers.</dd>
+    <dt>Deepfake</dt><dd>Very realistic fake video, image or audio made with AI.</dd>
+    <dt>Defence in depth</dt><dd>Using many layers of protection so one failure does not break security.</dd>
+    <dt>Defensive distillation</dt><dd>Training a student model from a teacher's softened outputs to make it harder to fool.</dd>
+    <dt>Differential privacy</dt><dd>Adding careful noise so no individual's data can be identified, while results stay useful.</dd>
+    <dt>Diffusion model</dt><dd>A generative model that turns noise into images step by step.</dd>
+    <dt>DevSecOps</dt><dd>Building security into every step of software development and operation.</dd>
+    <dt>DoS (Denial of Service)</dt><dd>Flooding a system so real users cannot use it.</dd>
+    <dt>Evasion attack</dt><dd>See adversarial example; fooling a trained model at the time it is used.</dd>
+    <dt>Explainability / interpretability</dt><dd>Being able to understand why a model made a decision.</dd>
+    <dt>Fail-safe / kill switch</dt><dd>A way to safely stop or limit a system when something goes wrong.</dd>
+    <dt>Federated learning</dt><dd>Training across many devices without sharing raw data.</dd>
+    <dt>Feature engineering</dt><dd>Picking out useful parts of data by hand for a model.</dd>
+    <dt>GAN</dt><dd>Two models competing: one makes fakes, one detects them.</dd>
+    <dt>Generative model</dt><dd>A model that creates new content like text, images or music.</dd>
+    <dt>Gradient masking</dt><dd>Hiding or smoothing a model's behaviour so attacks are harder to calculate.</dd>
+    <dt>Grounding</dt><dd>Linking an AI's answers to trusted sources to reduce made-up answers.</dd>
+    <dt>Guardrail</dt><dd>A rule or check that keeps an AI's behaviour safe.</dd>
+    <dt>Hallucination</dt><dd>When an AI states something false as if it were true.</dd>
+    <dt>Homomorphic encryption</dt><dd>Calculating on encrypted data without decrypting it.</dd>
+    <dt>ICS / OT / PLC</dt><dd>Industrial control system / operational technology / the small computer that controls a machine.</dd>
+    <dt>Inference</dt><dd>Using a trained model to make predictions on new data.</dd>
+    <dt>Inference attack</dt><dd>An attack that learns private information by questioning a model.</dd>
+    <dt>Jailbreak</dt><dd>A prompt that breaks an AI's safety rules.</dd>
+    <dt>LLM</dt><dd>Large Language Model, a huge text-trained model such as GPT.</dd>
+    <dt>LSTM / RNN</dt><dd>Models with memory for sequences; LSTM remembers longer than a basic RNN.</dd>
+    <dt>Machine learning</dt><dd>Computers learning from data instead of fixed rules.</dd>
+    <dt>Malware</dt><dd>Harmful software.</dd>
+    <dt>Membership inference</dt><dd>Finding out if a person's record was in the training data.</dd>
+    <dt>Metaprompt</dt><dd>Built-in instructions that guide how a language model behaves.</dd>
+    <dt>MITM</dt><dd>An attacker secretly sitting between two parties and reading or changing messages.</dd>
+    <dt>MITRE ATLAS</dt><dd>A public map of attack tactics and techniques used against AI.</dd>
+    <dt>Model inversion</dt><dd>Rebuilding private inputs from a model's outputs.</dd>
+    <dt>Model stealing / extraction</dt><dd>Copying a model by querying it many times.</dd>
+    <dt>Multimodal AI</dt><dd>AI that handles several data types, like text, images and audio.</dd>
+    <dt>Neural network</dt><dd>A model made of layers of connected units, loosely like a brain.</dd>
+    <dt>Output perturbation</dt><dd>Adding noise to a model's answers to make copying harder.</dd>
+    <dt>Overfitting</dt><dd>When a model learns its training data too exactly and does worse on new data.</dd>
+    <dt>Phishing</dt><dd>Fake messages that trick people into giving information or money.</dd>
+    <dt>Prompt injection</dt><dd>A crafted input that makes a language model follow the attacker's instructions.</dd>
+    <dt>Quantisation</dt><dd>Using less precise numbers in a model to make it smaller and faster.</dd>
+    <dt>RAG</dt><dd>Retrieval-Augmented Generation: the model looks up real information before answering.</dd>
+    <dt>Rate limiting</dt><dd>Limiting how many requests one user can make.</dd>
+    <dt>Reinforcement learning</dt><dd>Learning by trial and error using rewards.</dd>
+    <dt>Resilience</dt><dd>The ability to recover from failures or attacks while staying secure.</dd>
+    <dt>Robustness</dt><dd>Keeping correct behaviour under strange, noisy or attacked inputs.</dd>
+    <dt>Supervised / unsupervised learning</dt><dd>Learning from labelled data / finding patterns in unlabelled data.</dd>
+    <dt>Surrogate model</dt><dd>A copy of a model trained from the original's answers.</dd>
+    <dt>Synthetic data</dt><dd>Artificial data made to copy real data patterns.</dd>
+    <dt>Threat model</dt><dd>A description of what an attacker knows and can do.</dd>
+    <dt>Training / training data</dt><dd>Showing a model examples so it learns / those examples.</dd>
+    <dt>Transformer</dt><dd>A model that reads all input at once using attention; basis of modern chatbots.</dd>
+    <dt>Trigger</dt><dd>The hidden pattern that activates a backdoor.</dd>
+    <dt>Watermarking</dt><dd>A hidden signature in a model that proves ownership if it is stolen.</dd>
+    <dt>Zero-day</dt><dd>An attack on a weakness that has no fix yet.</dd>
+    <dt>Zero-trust</dt><dd>Never trusting by default; always checking every user and device.</dd>
+  </dl>
+</section>
+
+
+</main>
+
+<footer>
+  Notes for personal study. Based on the Coursera course material.
+</footer>
+
+<script>
+  // Three course tabs, each with its own module tabs. The URL hash (e.g. #p3-m2) picks the page.
+  function showPage() {
+    var id = location.hash.slice(1);
+    var el = document.getElementById(id);
+    if (!el || !el.matches('section')) {
+      id = 'p1-m1';
+    }
+    var course = id.split('-')[0];
+    document.querySelectorAll('section').forEach(function (s) {
+      s.classList.toggle('active', s.id === id);
+    });
+    document.querySelectorAll('#topnav a').forEach(function (a) {
+      a.classList.toggle('active', a.getAttribute('data-course') === course);
+    });
+    document.querySelectorAll('nav.sub').forEach(function (n) {
+      n.classList.toggle('show', n.id === 'sub-' + course);
+    });
+    document.querySelectorAll('nav.sub a').forEach(function (a) {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + id);
+    });
+    window.scrollTo(0, 0);
+    setTimeout(function () { window.scrollTo(0, 0); }, 0);
+  }
+  window.addEventListener('hashchange', showPage);
+  showPage();
+</script>
+</body>
+</html>
